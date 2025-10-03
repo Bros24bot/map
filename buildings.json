@@ -1,8 +1,8 @@
-[
-    { "type": "facility", "x": 5, "y": 5, "name": "Troop testing data" },
-    { "type": "facility", "x": 100, "y": 200, "name": "Troop Defense lvl 2" },
-    { "type": "facility", "x": 200, "y": 100, "name": "Troop Defense lvl 2" },
-    { "type": "facility", "x": 111, "y": 111, "name": "Troop Defense lvl 2" },
-    { "type": "facility", "x": 200, "y": 50, "name": "Troop Defense lvl 2" },
-    { "type": "facility", "x": 150, "y": 400, "name": "Troop Defense lvl 2" }
-]
+{
+  "meta": { "app": "bros24-settlement-planner", "version": 1, "gridSize": 30, "mapSize": 1500 },
+  "items": [
+    { "id": 1, "type": "city", "x": 750, "y": 750, "name": "Main" },
+    { "id": 2, "type": "bear", "x": 650, "y": 760, "name": "Bear Trap" },
+    { "id": 3, "type": "wood", "x": 820, "y": 820, "name": "Wood" }
+  ]
+}
