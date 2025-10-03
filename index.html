@@ -1,147 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light only" />
-  <meta name="theme-color" content="#f7f9fc" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="color-scheme" content="light only"/>
   <title>Bros24 — Settlement Planner</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#f7f9fc;
-      --panel:#ffffff;
-      --text:#0d1b2a;
-      --muted:#5e6a7b;
-      --line:#e6ebf2;
-      --accent:#1859FF;
-      --accent-2:#5ad3ff;
-      --ok:#2a9d8f;
-      --warn:#c44536;
-      --chip:#eef3fb;
-      --grid:#ebf0f6;
+      --bg:#f7f9fc; --panel:#ffffff; --text:#0d1b2a; --muted:#5e6a7b; --line:#e6ebf2;
+      --accent:#1859FF; --accent-2:#5ad3ff; --ok:#2a9d8f; --warn:#c44536;
+      --chip:#eef3fb; --grid:#ebf0f6; --badge:#edf2ff;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Ubuntu;
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Ubuntu;
       color:var(--text);
-      background:
-        radial-gradient(1100px 600px at 70% -100px, #ffffff 0,#f4f7fc 60%,#eef3fb 100%);
-      display:grid;grid-template-rows:auto 1fr auto;
+      background:radial-gradient(1100px 600px at 70% -100px,#fff 0,#f4f7fc 60%,#eef3fb 100%);
+      display:grid; grid-template-rows:auto 1fr auto;
     }
     header{
-      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-      padding:12px 16px;
-      background:linear-gradient(90deg,#ffffff, #f6f8fd 60%, #f1f5fd);
-      border-bottom:1px solid var(--line);
-      position:sticky;top:0;z-index:10;
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+      padding:12px 16px; background:linear-gradient(90deg,#fff,#f6f8fd 60%,#f1f5fd);
+      border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10;
     }
-    .brand{
-      font-weight:800;letter-spacing:.2px;
+    .brand{ font-weight:800; letter-spacing:.2px; font-size:18px;
       background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      -webkit-background-clip:text;background-clip:text;color:transparent;
-      font-size:18px;
+      -webkit-background-clip:text; background-clip:text; color:transparent;
     }
-    .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
     .spacer{flex:1}
     .btn{
-      appearance:none;border:1px solid var(--line);background:#fff;color:var(--text);
-      padding:8px 12px;border-radius:10px;cursor:pointer;
-      transition:.15s transform,.15s background,.15s border-color;
-      font-weight:600; box-shadow:0 1px 0 rgba(13,27,42,.03);
+      appearance:none; border:1px solid var(--line); background:#fff; color:var(--text);
+      padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600;
+      transition:.15s transform,.15s background,.15s border-color; box-shadow:0 1px 0 rgba(13,27,42,.03);
     }
-    .btn:hover{transform:translateY(-1px);background:#f6f9ff}
+    .btn:hover{transform:translateY(-1px); background:#f6f9ff}
     .btn:active{transform:translateY(0)}
-    .btn.primary{background:linear-gradient(180deg,#eaf1ff,#e5f7ff);border-color:#cfe0ff}
-    .btn.ok{border-color:#bfe6dd;background:#ecfbf7}
-    .btn.warn{border-color:#ffd2ce;background:#ffefed}
-    .btn.ghost{background:#ffffff;border-color:var(--line)}
-    .btn.small{padding:6px 10px;font-size:13px}
-    .seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-    .seg .btn{border:0;border-right:1px solid var(--line);border-radius:0}
+    .btn.primary{background:linear-gradient(180deg,#eaf1ff,#e5f7ff); border-color:#cfe0ff}
+    .btn.ok{border-color:#bfe6dd; background:#ecfbf7}
+    .btn.warn{border-color:#ffd2ce; background:#ffefed}
+    .btn.ghost{background:#ffffff; border-color:var(--line)}
+    .btn.small{padding:6px 10px; font-size:13px}
+    .seg{display:flex; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff}
+    .seg .btn{border:0; border-right:1px solid var(--line); border-radius:0}
     .seg .btn:last-child{border-right:0}
-    #app{display:grid;grid-template-columns:320px 1fr;min-height:0}
+    select, input{
+      background:#fff; border:1px solid var(--line); color:var(--text);
+      border-radius:10px; padding:8px;
+    }
+
+    /* Layout */
+    #app{display:grid; grid-template-columns:340px 1fr; min-height:0}
     aside{
-      border-right:1px solid var(--line);background:#fbfdff;
-      padding:14px;display:flex;flex-direction:column;gap:14px;min-height:0
+      border-right:1px solid var(--line); background:#fbfdff;
+      padding:14px; display:flex; flex-direction:column; gap:14px; min-height:0
     }
     .panel{
-      background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;
+      background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px;
       box-shadow:0 4px 18px rgba(0,0,0,.04);
     }
-    .panel h3{margin:0 0 8px 0;font-size:14px;color:#233142;letter-spacing:.2px}
-    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .row input[type="number"]{width:84px}
-    label{font-size:12px;color:#3c4a5e}
-    input,select{
-      background:#fff;border:1px solid var(--line);color:var(--text);
-      border-radius:10px;padding:8px; box-shadow:0 1px 0 rgba(0,0,0,.02) inset;
-    }
-    #palette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-    .chip{
-      display:flex;gap:8px;align-items:center;justify-content:flex-start;
-      background:var(--chip);
-      border:1px solid #dfe8f6;border-radius:12px;padding:10px;cursor:pointer;user-select:none;
-    }
-    .chip .dot{
-      width:22px;height:22px;border-radius:6px;background:#d1e4ff;
-      display:grid;place-items:center;font-weight:800;color:#0b0f17;border:1px solid #c2d8ff
-    }
-    .chip.active{outline:2px solid var(--accent);outline-offset:0}
-    .chip span{font-size:13px}
-    .gridRow{display:flex;gap:8px;align-items:center;justify-content:space-between}
-    .muted{color:var(--muted);font-size:12px}
-    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#f2f6ff;border:1px solid #dbe7ff;border-radius:6px;padding:2px 6px}
-    canvas{display:block;width:100%;height:100%;cursor:crosshair}
-    #stageWrap{position:relative;background:#ffffff}
-    #coords{position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:10px;background:#ffffff;border:1px solid var(--line);color:#42536a;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
-    footer{border-top:1px solid var(--line);padding:10px 14px;font-size:12px;color:#415067;display:flex;gap:12px;align-items:center;justify-content:space-between;background:#ffffff}
-    .notice{color:#2f5eff}
-    .legend{display:flex;gap:10px;flex-wrap:wrap}
-    .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:6px;vertical-align:middle;border:1px solid #d6e4ff}
-    .hr{height:1px;background:var(--line);border:0;margin:8px 0}
+    .panel h3{margin:0 0 8px 0; font-size:14px; color:#233142; letter-spacing:.2px}
+    .sub{font-size:12px; color:var(--muted)}
+
+    /* Promo */
+    .promo{display:flex; gap:12px; align-items:flex-start}
+    .promo .badge{background:var(--badge); border:1px solid #dfe8ff; color:#274690; font-weight:700; padding:3px 8px; border-radius:999px; font-size:11px}
+    .promo a{color:#1c3dff; text-decoration:none; font-weight:700}
+    .promo .close{margin-left:auto}
+
+    /* Palette */
+    .groupTitle{margin:4px 0 8px; font-weight:800; font-size:12px; color:#314566; text-transform:uppercase; letter-spacing:.6px}
+    #palette{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+    .chip{display:flex; gap:10px; align-items:center; justify-content:flex-start;
+      background:var(--chip); border:1px solid #dfe8f6; border-radius:12px; padding:10px; cursor:pointer; user-select:none}
+    .chip .dot{width:24px; height:24px; border-radius:6px; background:#d1e4ff;
+      display:grid; place-items:center; font-weight:800; color:#0b0f17; border:1px solid #c2d8ff}
+    .chip small{font-size:11px; color:#4b5870}
+    .chip.active{outline:2px solid var(--accent); outline-offset:0}
+
+    .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .row input[type="number"]{width:88px}
+
+    .legend{display:flex; gap:10px; flex-wrap:wrap}
+    .legend i{display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:6px; vertical-align:middle; border:1px solid #d6e4ff}
+
+    /* Stage */
+    #stageWrap{position:relative; background:#ffffff}
+    canvas{display:block; width:100%; height:100%}
+    #coords{position:absolute; left:12px; bottom:12px; padding:6px 10px; border-radius:10px; background:#ffffff; border:1px solid var(--line); color:#42536a; font-size:12px; box-shadow:0 4px 14px rgba(0,0,0,.06)}
+
+    /* Footer */
+    footer{border-top:1px solid var(--line); background:#ffffff; padding:10px 14px}
+    .foot{display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between}
+    .foot .left,.foot .mid,.foot .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .kbd{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:#f2f6ff; border:1px solid #dbe7ff; border-radius:6px; padding:2px 6px}
+    .copyright{opacity:.9}
+
+    /* Chips for counts */
+    .miniStat{background:#f2f6ff; border:1px solid #dbe7ff; padding:4px 8px; border-radius:8px; font-size:12px}
+    .hr{height:1px; background:var(--line); border:0; margin:8px 0}
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">Bros24 • Settlement Planner</div>
+    <div class="brand" data-t="brand">Bros24 • Settlement Planner</div>
+
+    <!-- Modes -->
     <div class="toolbar" role="toolbar" aria-label="Tools">
       <div class="seg" role="tablist" aria-label="Mode">
-        <button id="modeSelect" class="btn small" aria-pressed="true" title="Select/Move (V)">Select</button>
-        <button id="modeBuild" class="btn small" title="Build (B)">Build</button>
-        <button id="modeErase" class="btn small" title="Erase (Del)">Erase</button>
-        <button id="modePan" class="btn small" title="Pan (Space)">Pan</button>
+        <button id="modeSelect" class="btn small" title="Select (V)" data-t="mode.select">Select</button>
+        <button id="modeBuild"  class="btn small" title="Build (B)"  data-t="mode.build">Build</button>
+        <button id="modeErase"  class="btn small" title="Erase (Del)" data-t="mode.erase">Erase</button>
+        <button id="modePan"    class="btn small" title="Pan (Space)" data-t="mode.pan">Pan</button>
       </div>
-      <button id="btnGrid" class="btn small ghost" title="Toggle grid (G)">Grid</button>
-      <button id="btnSnap" class="btn small ghost" title="Snap to grid (S)">Snap</button>
-      <button id="btnReset" class="btn small ghost" title="Reset view (0)">Reset</button>
+      <button id="btnGrid"  class="btn small ghost" title="Toggle grid (G)" data-t="btn.grid">Grid</button>
+      <button id="btnSnap"  class="btn small ghost" title="Snap to grid (S)" data-t="btn.snap">Snap</button>
+      <button id="btnReset" class="btn small ghost" title="Reset view (0)" data-t="btn.reset">Reset</button>
     </div>
+
     <div class="spacer"></div>
+
+    <!-- Actions -->
     <div class="toolbar">
-      <input id="fileInput" type="file" accept=".json" style="display:none" />
-      <button id="btnLoad" class="btn small">Load JSON</button>
-      <button id="btnSave" class="btn small ok">Save JSON</button>
-      <button id="btnPNG" class="btn small primary">Export PNG</button>
-      <button id="btnPDF" class="btn small primary">Export PDF</button>
-      <button id="btnClear" class="btn small warn">Clear</button>
+      <input id="fileInput" type="file" accept=".json" style="display:none"/>
+      <button id="btnLoad" class="btn small" data-t="btn.load">Load JSON</button>
+      <button id="btnSave" class="btn small ok" data-t="btn.save">Save JSON</button>
+      <button id="btnPNG"  class="btn small primary" data-t="btn.png">Export PNG</button>
+      <button id="btnPDF"  class="btn small primary" data-t="btn.pdf">Export PDF</button>
+      <button id="btnClear" class="btn small warn" data-t="btn.clear">Clear</button>
+
+      <!-- Language -->
+      <select id="langSelect" class="btn small">
+        <option value="de">Deutsch</option>
+        <option value="en" selected>English</option>
+        <option value="es">Español</option>
+        <option value="it">Italiano</option>
+        <option value="fr">Français</option>
+        <option value="th">ไทย</option>
+        <option value="pl">Polski</option>
+      </select>
     </div>
   </header>
 
   <div id="app">
     <aside>
-      <div class="panel">
-        <h3>Palette</h3>
-        <div id="palette"></div>
+
+      <!-- Promo / Discord -->
+      <div class="panel promo" id="promoCard">
+        <div>
+          <div class="badge">Community</div>
+          <div style="font-weight:800" data-t="promo.title">Join our Whiteout Survival community!</div>
+          <div class="sub" data-t="promo.body">Guides, events, multi-language channels — we even redeem in-game gift codes for members.</div>
+          <div style="margin-top:8px;">
+            <a href="http://www.discord.gg/wos-community" target="_blank" rel="noopener" data-t="promo.cta">Join on Discord</a> 🎁
+          </div>
+        </div>
+        <button class="btn small ghost close" onclick="promoCard.remove()">×</button>
       </div>
 
+      <!-- Counters / Limits -->
       <div class="panel">
-        <h3>Options</h3>
+        <h3 data-t="limits.title">Limits & Counts</h3>
+        <div class="row" id="countsRow"></div>
+      </div>
+
+      <!-- Palette -->
+      <div class="panel">
+        <h3 data-t="palette.title">Palette</h3>
+
+        <div class="groupTitle">Core</div>
+        <div id="palette-core" class="row" style="gap:8px; flex-wrap:wrap"></div>
+
+        <div class="groupTitle">Settlements (EN)</div>
+        <div id="palette-settlements" class="row" style="gap:8px; flex-wrap:wrap"></div>
+      </div>
+
+      <!-- Options -->
+      <div class="panel">
+        <h3 data-t="options.title">Options</h3>
         <div class="row">
-          <label>Grid size</label>
-          <input id="gridSize" type="number" min="5" max="200" step="1" value="30" />
-          <label>Map</label>
+          <label data-t="options.grid">Grid size</label>
+          <input id="gridSize" type="number" min="5" max="200" step="1" value="30"/>
+          <label data-t="options.map">Map</label>
           <select id="mapSize">
             <option value="1200">1200 × 1200</option>
             <option value="1500" selected>1500 × 1500</option>
@@ -151,49 +193,54 @@
         </div>
         <div class="hr"></div>
         <div class="row">
-          <label>Label size</label>
-          <input id="labelSize" type="number" min="8" max="48" step="1" value="14" />
-          <label>Icon size</label>
-          <input id="iconSize" type="number" min="10" max="60" step="1" value="28" />
+          <label data-t="options.label">Label size</label>
+          <input id="labelSize" type="number" min="8" max="48" step="1" value="14"/>
+          <label data-t="options.icon">Icon size</label>
+          <input id="iconSize" type="number" min="10" max="60" step="1" value="28"/>
+          <label><input id="noOverlap" type="checkbox" checked/> <span class="sub" data-t="options.block">Block overlaps</span></label>
         </div>
         <div class="hr"></div>
-        <div class="gridRow">
-          <span class="muted">Mousewheel to zoom • drag to pan</span>
-          <span class="muted"><span class="kbd">B</span> build • <span class="kbd">V</span> select</span>
-        </div>
+        <div class="sub" data-t="hints.zoom">Mousewheel to zoom • drag to pan • <span class="kbd">B</span> build • <span class="kbd">V</span> select</div>
       </div>
 
+      <!-- Selected -->
       <div class="panel">
-        <h3>Selected</h3>
+        <h3 data-t="selected.title">Selected</h3>
         <div class="row">
-          <label>Type</label><select id="selType"></select>
+          <label data-t="selected.type">Type</label>
+          <select id="selType"></select>
         </div>
         <div class="row">
-          <label>Name</label><input id="selName" type="text" placeholder="Custom name"/>
+          <label data-t="selected.name">Name</label>
+          <input id="selName" type="text" placeholder="Player / City name"/>
         </div>
         <div class="row">
-          <label>X</label><input id="selX" type="number" />
-          <label>Y</label><input id="selY" type="number" />
-          <button id="btnApply" class="btn small">Apply</button>
+          <label>X</label><input id="selX" type="number"/>
+          <label>Y</label><input id="selY" type="number"/>
+          <button id="btnApply" class="btn small" data-t="selected.apply">Apply</button>
         </div>
         <div class="row">
+          <span class="miniStat" id="selSize">—</span>
           <button id="btnDup" class="btn small">Duplicate</button>
           <button id="btnDelete" class="btn small warn">Delete</button>
         </div>
       </div>
 
+      <!-- Legend -->
       <div class="panel">
-        <h3>Legend</h3>
+        <h3 data-t="legend.title">Legend</h3>
         <div id="legend" class="legend"></div>
       </div>
 
+      <!-- About -->
       <div class="panel">
-        <h3>About</h3>
-        <div class="muted">
+        <h3 data-t="about.title">About</h3>
+        <div class="sub" data-t="about.body">
           Client-only. Your layouts stay on your device unless you press “Save JSON”.
-          No server storage. Not affiliated with Century Games.
+          Not affiliated with Century Games.
         </div>
       </div>
+
     </aside>
 
     <div id="stageWrap">
@@ -203,132 +250,247 @@
   </div>
 
   <footer>
-    <div class="notice">Tip: <span class="kbd">Ctrl</span>+<span class="kbd">S</span> Save JSON • <span class="kbd">Ctrl</span>+<span class="kbd">O</span> Load JSON</div>
-    <div class="copyright">© bros24 / State214</div>
+    <div class="foot">
+      <div class="left">
+        <span class="sub">Language:</span>
+        <select id="langSelectFoot" class="btn small">
+          <option value="de">Deutsch</option><option value="en" selected>English</option>
+          <option value="es">Español</option><option value="it">Italiano</option>
+          <option value="fr">Français</option><option value="th">ไทย</option>
+          <option value="pl">Polski</option>
+        </select>
+        <a href="http://www.discord.gg/wos-community" target="_blank" rel="noopener" class="btn small primary" data-t="promo.cta">Join on Discord</a>
+      </div>
+      <div class="mid sub" id="footTips">
+        <span class="kbd">Ctrl</span>+<span class="kbd">S</span> Save JSON • <span class="kbd">Ctrl</span>+<span class="kbd">O</span> Load JSON
+      </div>
+      <div class="right sub">
+        <span class="copyright">© bros24 / State214</span>
+      </div>
+    </div>
   </footer>
 
-  <!-- jsPDF (2 CDNs + graceful fallback) -->
+  <!-- jsPDF CDN (with fallback) -->
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>if(!window.jspdf){document.write('<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>')}</script>
 
   <script>
-  // ---------- Types ----------
-  const TYPES = [
-    { key:'city',    label:'City',        short:'C',  color:'#98C1FE' },
-    { key:'bear',    label:'Bear Trap',   short:'B',  color:'#FFC4BC' },
-    { key:'meat',    label:'Meat Farm',   short:'M',  color:'#FCE58F' },
-    { key:'wood',    label:'Wood Farm',   short:'W',  color:'#CFE8AE' },
-    { key:'coal',    label:'Coal Farm',   short:'Co', color:'#D6DDE8' },
-    { key:'iron',    label:'Iron Farm',   short:'Fe', color:'#C9DAFF' },
-    { key:'facility',label:'Facility',    short:'F',  color:'#E6D8FF' },
-    { key:'turret',  label:'Turret',      short:'T',  color:'#FFE1A8' },
-    { key:'castle',  label:'Castle',      short:'$',  color:'#FFF3B0' },
-  ];
-  const typeByKey = Object.fromEntries(TYPES.map(t=>[t.key,t]));
-  const defaultType = 'city';
+  // ====== I18N (DE/EN/ES/IT/FR/TH/PL) ======
+  const I18N = {
+    de:{brand:"Bros24 • Siedlungsplaner",
+      "mode.select":"Auswählen","mode.build":"Bauen","mode.erase":"Löschen","mode.pan":"Verschieben",
+      "btn.grid":"Raster","btn.snap":"Snap","btn.reset":"Reset","btn.load":"JSON laden","btn.save":"JSON speichern",
+      "btn.png":"PNG exportieren","btn.pdf":"PDF exportieren","btn.clear":"Leeren",
+      "palette.title":"Palette","options.title":"Optionen","options.grid":"Rastergröße","options.map":"Karte",
+      "options.label":"Beschriftung","options.icon":"Icon-Größe","options.block":"Überlappungen blockieren",
+      "hints.zoom":"Mausrad zum Zoomen • Ziehen zum Pannen • <span class='kbd'>B</span> bauen • <span class='kbd'>V</span> wählen",
+      "selected.title":"Auswahl","selected.type":"Typ","selected.name":"Name","selected.apply":"Übernehmen",
+      "legend.title":"Legende","about.title":"Info","about.body":"Nur Client. Nichts wird serverseitig gespeichert. Nicht mit Century Games verbunden.",
+      "limits.title":"Limits & Zähler",
+      "promo.title":"Tritt unserer Whiteout-Survival-Community bei!",
+      "promo.body":"Guides, Events, mehrsprachige Channels – wir lösen sogar In-Game-Codes für Mitglieder ein.",
+      "promo.cta":"Auf Discord beitreten"},
+    en:{brand:"Bros24 • Settlement Planner",
+      "mode.select":"Select","mode.build":"Build","mode.erase":"Erase","mode.pan":"Pan",
+      "btn.grid":"Grid","btn.snap":"Snap","btn.reset":"Reset","btn.load":"Load JSON","btn.save":"Save JSON",
+      "btn.png":"Export PNG","btn.pdf":"Export PDF","btn.clear":"Clear",
+      "palette.title":"Palette","options.title":"Options","options.grid":"Grid size","options.map":"Map",
+      "options.label":"Label size","options.icon":"Icon size","options.block":"Block overlaps",
+      "hints.zoom":"Mousewheel to zoom • drag to pan • <span class='kbd'>B</span> build • <span class='kbd'>V</span> select",
+      "selected.title":"Selected","selected.type":"Type","selected.name":"Name","selected.apply":"Apply",
+      "legend.title":"Legend","about.title":"About","about.body":"Client-only. Nothing stored on a server. Not affiliated with Century Games.",
+      "limits.title":"Limits & Counts",
+      "promo.title":"Join our Whiteout Survival community!",
+      "promo.body":"Guides, events, multi-language channels — we also redeem in-game gift codes for members.",
+      "promo.cta":"Join on Discord"},
+    es:{brand:"Bros24 • Planificador de Asentamientos",
+      "mode.select":"Seleccionar","mode.build":"Construir","mode.erase":"Eliminar","mode.pan":"Desplazar",
+      "btn.grid":"Cuadrícula","btn.snap":"Ajuste","btn.reset":"Reiniciar","btn.load":"Cargar JSON","btn.save":"Guardar JSON",
+      "btn.png":"Exportar PNG","btn.pdf":"Exportar PDF","btn.clear":"Limpiar",
+      "palette.title":"Paleta","options.title":"Opciones","options.grid":"Tamaño de cuadrícula","options.map":"Mapa",
+      "options.label":"Tamaño de etiqueta","options.icon":"Tamaño de icono","options.block":"Bloquear solapes",
+      "hints.zoom":"Rueda para zoom • arrastra para mover • <span class='kbd'>B</span> construir • <span class='kbd'>V</span> seleccionar",
+      "selected.title":"Seleccionado","selected.type":"Tipo","selected.name":"Nombre","selected.apply":"Aplicar",
+      "legend.title":"Leyenda","about.title":"Acerca de","about.body":"Solo cliente. Nada se guarda en servidor. No afiliado a Century Games.",
+      "limits.title":"Límites y conteo",
+      "promo.title":"¡Únete a nuestra comunidad de Whiteout Survival!",
+      "promo.body":"Guías, eventos, canales multilenguaje — también canjeamos códigos del juego para miembros.",
+      "promo.cta":"Unirse en Discord"},
+    it:{brand:"Bros24 • Planner Insediamenti",
+      "mode.select":"Seleziona","mode.build":"Costruisci","mode.erase":"Elimina","mode.pan":"Sposta",
+      "btn.grid":"Griglia","btn.snap":"Aggancio","btn.reset":"Reset","btn.load":"Carica JSON","btn.save":"Salva JSON",
+      "btn.png":"Esporta PNG","btn.pdf":"Esporta PDF","btn.clear":"Pulisci",
+      "palette.title":"Tavolozza","options.title":"Opzioni","options.grid":"Dimensione griglia","options.map":"Mappa",
+      "options.label":"Dimensione etichetta","options.icon":"Dimensione icona","options.block":"Blocca sovrapposizioni",
+      "hints.zoom":"Rotellina per zoom • trascina per spostare • <span class='kbd'>B</span> costruisci • <span class='kbd'>V</span> seleziona",
+      "selected.title":"Selezionato","selected.type":"Tipo","selected.name":"Nome","selected.apply":"Applica",
+      "legend.title":"Legenda","about.title":"Info","about.body":"Solo client. Nessun salvataggio su server. Non affiliato a Century Games.",
+      "limits.title":"Limiti e conteggi",
+      "promo.title":"Unisciti alla nostra community di Whiteout Survival!",
+      "promo.body":"Guide, eventi, canali multilingua — riscattiamo anche codici di gioco per i membri.",
+      "promo.cta":"Entra su Discord"},
+    fr:{brand:"Bros24 • Planificateur d’implantation",
+      "mode.select":"Sélectionner","mode.build":"Construire","mode.erase":"Supprimer","mode.pan":"Déplacer",
+      "btn.grid":"Grille","btn.snap":"Ajuster","btn.reset":"Réinitialiser","btn.load":"Charger JSON","btn.save":"Enregistrer JSON",
+      "btn.png":"Exporter PNG","btn.pdf":"Exporter PDF","btn.clear":"Effacer",
+      "palette.title":"Palette","options.title":"Options","options.grid":"Taille de la grille","options.map":"Carte",
+      "options.label":"Taille des labels","options.icon":"Taille des icônes","options.block":"Bloquer les chevauchements",
+      "hints.zoom":"Molette pour zoomer • glisser pour déplacer • <span class='kbd'>B</span> construire • <span class='kbd'>V</span> sélectionner",
+      "selected.title":"Sélection","selected.type":"Type","selected.name":"Nom","selected.apply":"Appliquer",
+      "legend.title":"Légende","about.title":"À propos","about.body":"Côté client uniquement. Rien n’est stocké sur un serveur. Non affilié à Century Games.",
+      "limits.title":"Limites & compteurs",
+      "promo.title":"Rejoignez notre communauté Whiteout Survival !",
+      "promo.body":"Guides, événements, canaux multilingues — nous échangeons aussi des codes en jeu pour les membres.",
+      "promo.cta":"Rejoindre sur Discord"},
+    th:{brand:"Bros24 • ตัววางผังเมือง",
+      "mode.select":"เลือก","mode.build":"สร้าง","mode.erase":"ลบ","mode.pan":"เลื่อน",
+      "btn.grid":"ตาราง","btn.snap":"ดูดติด","btn.reset":"รีเซ็ต","btn.load":"โหลด JSON","btn.save":"บันทึก JSON",
+      "btn.png":"ส่งออก PNG","btn.pdf":"ส่งออก PDF","btn.clear":"ล้าง",
+      "palette.title":"พาเลตต์","options.title":"ตัวเลือก","options.grid":"ขนาดตาราง","options.map":"แผนที่",
+      "options.label":"ขนาดป้ายชื่อ","options.icon":"ขนาดไอคอน","options.block":"บล็อคการซ้อนทับ",
+      "hints.zoom":"ล้อเมาส์เพื่อซูม • ลากเพื่อเลื่อน • <span class='kbd'>B</span> สร้าง • <span class='kbd'>V</span> เลือก",
+      "selected.title":"รายการที่เลือก","selected.type":"ชนิด","selected.name":"ชื่อ","selected.apply":"ใช้",
+      "legend.title":"คำอธิบายสี","about.title":"เกี่ยวกับ","about.body":"ทำงานในเบราว์เซอร์เท่านั้น ไม่มีการเก็บบนเซิร์ฟเวอร์ ไม่ได้เกี่ยวข้องกับ Century Games",
+      "limits.title":"ขีดจำกัดและจำนวน",
+      "promo.title":"เข้าร่วมคอมมูนิตี้ Whiteout Survival!",
+      "promo.body":"คู่มือ อีเวนต์ ช่องหลายภาษา — และมีบริการแลกโค้ดของขวัญในเกมสำหรับสมาชิก",
+      "promo.cta":"เข้าร่วม Discord"},
+    pl:{brand:"Bros24 • Planer osady",
+      "mode.select":"Wybierz","mode.build":"Buduj","mode.erase":"Usuń","mode.pan":"Przesuwaj",
+      "btn.grid":"Siatka","btn.snap":"Przyciąganie","btn.reset":"Reset","btn.load":"Wczytaj JSON","btn.save":"Zapisz JSON",
+      "btn.png":"Eksportuj PNG","btn.pdf":"Eksportuj PDF","btn.clear":"Wyczyść",
+      "palette.title":"Paleta","options.title":"Opcje","options.grid":"Rozmiar siatki","options.map":"Mapa",
+      "options.label":"Rozmiar etykiet","options.icon":"Rozmiar ikon","options.block":"Blokuj nakładanie",
+      "hints.zoom":"Kółko myszy — powiększanie • przeciągnij — przesuwanie • <span class='kbd'>B</span> buduj • <span class='kbd'>V</span> wybierz",
+      "selected.title":"Zaznaczone","selected.type":"Typ","selected.name":"Nazwa","selected.apply":"Zastosuj",
+      "legend.title":"Legenda","about.title":"O aplikacji","about.body":"Tylko po stronie klienta. Nic nie jest zapisywane na serwerze. Brak powiązań z Century Games.",
+      "limits.title":"Limity i liczniki",
+      "promo.title":"Dołącz do naszej społeczności Whiteout Survival!",
+      "promo.body":"Poradniki, wydarzenia, kanały wielojęzyczne — wymieniamy też kody z gry dla członków.",
+      "promo.cta":"Dołącz na Discordzie"},
+  };
 
-  // ---------- State ----------
+  function applyLang(lang){
+    document.documentElement.setAttribute('lang', lang);
+    document.body.parentElement.dataset.lang = lang;
+    document.querySelectorAll('[data-t]').forEach(el=>{
+      const key = el.getAttribute('data-t');
+      if(I18N[lang]?.[key]) el.innerHTML = I18N[lang][key];
+      else if(I18N['en']?.[key]) el.innerHTML = I18N['en'][key];
+    });
+  }
+
+  const langSel = document.getElementById('langSelect');
+  const langSelFoot = document.getElementById('langSelectFoot');
+  langSel.addEventListener('change', e=>{ langSelFoot.value=e.target.value; applyLang(e.target.value); });
+  langSelFoot.addEventListener('change', e=>{ langSel.value=e.target.value; applyLang(e.target.value); });
+  // initial
+  const _bLang = (navigator.language||'en').slice(0,2);
+  const _initLang = ['de','en','es','it','fr','th','pl'].includes(_bLang) ? _bLang : 'en';
+  langSel.value = _initLang; langSelFoot.value=_initLang; applyLang(_initLang);
+
+  // ====== Catalog (sizes in tiles, limits) ======
+  const CATALOG = [
+    // Core
+    { key:'banner',  group:'core', label:'Banner', color:'#9AD0F5', short:'Ba', w:1, h:1, limit:999 },
+    { key:'bt1',     group:'core', label:'Bear Trap 1', color:'#FFC4BC', short:'BT1', w:3, h:3, limit:1 },
+    { key:'bt2',     group:'core', label:'Bear Trap 2', color:'#FFB2A5', short:'BT2', w:3, h:3, limit:1 },
+    { key:'hq1',     group:'core', label:'HQ (Icefield)', color:'#E6D8FF', short:'HQ1', w:2, h:2, limit:1 },
+    { key:'hq2',     group:'core', label:'HQ (Tundra)',   color:'#D7C7FF', short:'HQ2', w:2, h:2, limit:1 },
+    // Settlements (EN)
+    { key:'town',    group:'settlements', label:'Town', color:'#CFE8AE', short:'T', w:2, h:2, limit:100 },
+    // Optional facility example (2×2)
+    { key:'facility',group:'core', label:'Facility', color:'#B7E0FF', short:'F', w:2, h:2, limit:999 },
+  ];
+  const TYPES = Object.fromEntries(CATALOG.map(t=>[t.key,t]));
+  const ORDER = { core:['banner','bt1','bt2','hq1','hq2','facility'], settlements:['town'] };
+
+  // ====== State ======
   const state = {
     items: [], nextId:1,
-    mode: 'select', // 'build'|'erase'|'pan'
-    camera: {x: 0, y:0, scale:1},
-    grid: true, snap: true, gridSize: 30, mapSize: 1500,
-    selectedId: null, labelSize: 14, iconSize: 28,
-    spacePanning:false
+    mode:'select', camera:{x:0,y:0,scale:1},
+    grid:true, snap:true, gridSize:30, mapSize:1500,
+    selectedId:null, labelSize:14, iconSize:28,
+    blockOverlap:true, spacePanning:false,
   };
 
-  // ---------- DOM ----------
+  // ====== DOM ======
   const $ = s=>document.querySelector(s);
-  const palette = $('#palette');
-  const stage = $('#stage');
-  const ctx = stage.getContext('2d');
-  const wrap = $('#stageWrap');
-  const coords = $('#coords');
-
-  const btns = {
-    modeSelect: $('#modeSelect'), modeBuild: $('#modeBuild'),
-    modeErase: $('#modeErase'),   modePan:   $('#modePan'),
+  const stage = $('#stage'), ctx = stage.getContext('2d'), wrap = $('#stageWrap'), coords = $('#coords');
+  const ui = {
+    modeSelect: $('#modeSelect'), modeBuild: $('#modeBuild'), modeErase: $('#modeErase'), modePan: $('#modePan'),
     btnGrid: $('#btnGrid'), btnSnap: $('#btnSnap'), btnReset: $('#btnReset'),
-    btnLoad: $('#btnLoad'), btnSave: $('#btnSave'), btnPNG: $('#btnPNG'), btnPDF: $('#btnPDF'), btnClear: $('#btnClear'),
-    fileInput: $('#fileInput'),
+    btnLoad: $('#btnLoad'), btnSave: $('#btnSave'), btnPNG: $('#btnPNG'), btnPDF: $('#btnPDF'), btnClear: $('#btnClear'), fileInput: $('#fileInput'),
     gridSize: $('#gridSize'), mapSize: $('#mapSize'), labelSize: $('#labelSize'), iconSize: $('#iconSize'),
+    noOverlap: $('#noOverlap'),
+    paletteCore: $('#palette-core'), paletteSet: $('#palette-settlements'),
     selType: $('#selType'), selName: $('#selName'), selX: $('#selX'), selY: $('#selY'),
     btnApply: $('#btnApply'), btnDup: $('#btnDup'), btnDelete: $('#btnDelete'),
-    legend: $('#legend'),
+    legend: $('#legend'), countsRow: $('#countsRow'),
   };
 
-  // ---------- UI init ----------
+  // ====== UI Build ======
+  let currentType = 'town';
+
+  function chip(t){
+    const el = document.createElement('button');
+    el.className = 'chip'; el.dataset.type=t.key;
+    el.innerHTML = '<div class="dot" style="background:'+t.color+'">'+t.short+'</div>'
+                 + '<div><div>'+t.label+'</div><small>'+t.w+'×'+t.h+' tiles</small></div>';
+    el.onclick = ()=>{ setMode('build'); currentType=t.key; highlight(); };
+    return el;
+  }
   function buildPalette(){
-    palette.innerHTML = '';
-    TYPES.forEach(t=>{
-      const el = document.createElement('button');
-      el.className = 'chip'; el.dataset.type = t.key;
-      el.innerHTML = '<div class="dot" style="background:'+t.color+'">'+t.short+'</div><span>'+t.label+'</span>';
-      el.onclick = ()=>{ setMode('build'); currentBuildType = t.key; highlightPalette(); };
-      palette.appendChild(el);
-    });
+    ui.paletteCore.innerHTML=''; ui.paletteSet.innerHTML='';
+    ORDER.core.forEach(k=> ui.paletteCore.appendChild(chip(TYPES[k])));
+    ORDER.settlements.forEach(k=> ui.paletteSet.appendChild(chip(TYPES[k])));
   }
   function buildLegend(){
-    btns.legend.innerHTML = '';
-    TYPES.forEach(t=>{
-      const span = document.createElement('span');
-      span.innerHTML = '<i style="background:'+t.color+'"></i>'+t.label;
-      btns.legend.appendChild(span);
+    ui.legend.innerHTML='';
+    CATALOG.forEach(t=>{
+      const e=document.createElement('span');
+      e.innerHTML = '<i style="background:'+t.color+'"></i>'+t.label+' ('+t.w+'×'+t.h+')';
+      ui.legend.appendChild(e);
     });
   }
-  function buildSelectedType(){
-    btns.selType.innerHTML = TYPES.map(t=>'<option value="'+t.key+'">'+t.label+'</option>').join('');
+  function buildSelType(){
+    ui.selType.innerHTML = CATALOG.map(t=>'<option value="'+t.key+'">'+t.label+' ('+t.w+'×'+t.h+')</option>').join('');
   }
-  buildPalette(); buildLegend(); buildSelectedType();
-  let currentBuildType = defaultType;
+  buildPalette(); buildLegend(); buildSelType();
 
-  function highlightPalette(){
-    palette.querySelectorAll('.chip').forEach(el=>{
-      el.classList.toggle('active', el.dataset.type===currentBuildType);
-    });
-    btns.modeSelect.classList.toggle('primary', state.mode==='select');
-    btns.modeBuild.classList.toggle('primary', state.mode==='build');
-    btns.modeErase.classList.toggle('primary', state.mode==='erase');
-    btns.modePan.classList.toggle('primary', state.mode==='pan');
-    btns.btnGrid.classList.toggle('primary', state.grid);
-    btns.btnSnap.classList.toggle('primary', state.snap);
+  function highlight(){
+    document.querySelectorAll('.chip').forEach(c=> c.classList.toggle('active', c.dataset.type===currentType));
+    ui.modeSelect.classList.toggle('primary', state.mode==='select');
+    ui.modeBuild.classList.toggle('primary', state.mode==='build');
+    ui.modeErase.classList.toggle('primary', state.mode==='erase');
+    ui.modePan.classList.toggle('primary', state.mode==='pan');
+    ui.btnGrid.classList.toggle('primary', state.grid);
+    ui.btnSnap.classList.toggle('primary', state.snap);
   }
-  highlightPalette();
+  highlight();
 
-  // ---------- Coords transform ----------
-  function worldToScreen(wx, wy){
-    const {x,y,scale} = state.camera;
-    return [ (wx - x)*scale, (wy - y)*scale ];
-  }
-  function screenToWorld(sx, sy){
-    const {x,y,scale} = state.camera;
-    return [ sx/scale + x, sy/scale + y ];
-  }
-  function snap(n){ return state.snap ? Math.round(n/state.gridSize)*state.gridSize : n; }
+  // ====== Coords transform ======
+  const W2S=(wx,wy)=>{const {x,y,scale}=state.camera; return [(wx - x)*scale,(wy - y)*scale];};
+  const S2W=(sx,sy)=>{const {x,y,scale}=state.camera; return [sx/scale + x, sy/scale + y];};
+  const snap=v=> state.snap ? Math.round(v/state.gridSize)*state.gridSize : v;
 
-  // ---------- Drawing ----------
-  function roundedRect(c,x,y,w,h,r){
-    const rr=Math.min(r,w/2,h/2);
-    c.beginPath();
-    c.moveTo(x+rr,y);
-    c.arcTo(x+w,y,x+w,y+h,rr);
-    c.arcTo(x+w,y+h,x,y+h,rr);
-    c.arcTo(x,y+h,x,y,rr);
-    c.arcTo(x,y,x+w,y,rr);
-    c.closePath();
+  // ====== Drawing ======
+  function roundedRect(c,x,y,w,h,r){const rr=Math.min(r,w/2,h/2); c.beginPath(); c.moveTo(x+rr,y);
+    c.arcTo(x+w,y,x+w,y+h,rr); c.arcTo(x+w,y+h,x,y+h,rr); c.arcTo(x,y+h,x,y,rr); c.arcTo(x,y,x+w,y,rr); c.closePath();}
+
+  function fitCanvas(){
+    const dpr=window.devicePixelRatio||1; const rect=wrap.getBoundingClientRect();
+    const w=Math.max(320,rect.width), h=Math.max(320,rect.height);
+    stage.width=Math.round(w*dpr); stage.height=Math.round(h*dpr);
+    stage.style.width=w+'px'; stage.style.height=h+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
   }
 
   function drawGrid(){
     if(!state.grid) return;
-    const {scale} = state.camera;
-    const step = state.gridSize*scale;
-    if(step<8) return;
-    const [w,h] = [stage.width, stage.height];
-    const ox = (-state.camera.x*scale)%step;
-    const oy = (-state.camera.y*scale)%step;
-    ctx.strokeStyle = '#dde6f3';
-    ctx.lineWidth = 1;
-    ctx.globalAlpha = 1;
+    const step=state.gridSize*state.camera.scale; if(step<8) return;
+    const [w,h]=[stage.width, stage.height];
+    const ox=(-state.camera.x*state.camera.scale)%step, oy=(-state.camera.y*state.camera.scale)%step;
+    ctx.strokeStyle='#dde6f3'; ctx.lineWidth=1;
     ctx.beginPath();
     for(let x=ox;x<w;x+=step){ ctx.moveTo(x,0); ctx.lineTo(x,h); }
     for(let y=oy;y<h;y+=step){ ctx.moveTo(0,y); ctx.lineTo(w,y); }
@@ -336,377 +498,301 @@
   }
 
   function drawItems(){
-    const r = state.iconSize/2;
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    ctx.font = '600 '+state.labelSize+'px Inter, system-ui, sans-serif';
-
-    for(const item of state.items){
-      const t = typeByKey[item.type] || typeByKey[defaultType];
-      const [sx,sy] = worldToScreen(item.x, item.y);
-      const isSel = item.id===state.selectedId;
-
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    for(const it of state.items){
+      const t=TYPES[it.type]; const [sx,sy]=W2S(it.x,it.y);
+      const w=t.w*state.gridSize*state.camera.scale, h=t.h*state.gridSize*state.camera.scale;
+      // body
       ctx.save();
-      ctx.shadowColor = 'rgba(0,0,0,.07)';
-      ctx.shadowBlur = 8;
-      ctx.fillStyle = t.color;
-      roundedRect(ctx, sx-r, sy-r, r*2, r*2, 6);
+      ctx.shadowColor='rgba(0,0,0,.07)'; ctx.shadowBlur=8;
+      ctx.fillStyle=t.color;
+      roundedRect(ctx, sx, sy, w, h, 8);
       ctx.fill();
       ctx.restore();
-
-      ctx.fillStyle = '#0d1b2a';
-      ctx.font = '800 '+Math.max(10, state.labelSize-2)+'px Inter, system-ui, sans-serif';
-      ctx.fillText(t.short, sx, sy);
-
-      if(item.name){
-        ctx.font = '600 '+(state.labelSize-2)+'px Inter, system-ui, sans-serif';
-        ctx.fillStyle = 'rgba(13,27,42,.8)';
-        ctx.fillText(item.name, sx, sy + r + 10);
+      // short
+      ctx.fillStyle='#0d1b2a';
+      ctx.font='800 '+Math.max(10, state.labelSize-2)+'px Inter, system-ui, sans-serif';
+      ctx.fillText(t.short, sx+w/2, sy+h/2);
+      // name
+      if(it.name){
+        ctx.font='600 '+(state.labelSize)+'px Inter, system-ui, sans-serif';
+        ctx.fillStyle='rgba(13,27,42,.85)';
+        ctx.fillText(it.name, sx+w/2, sy+h + 14);
       }
-
-      if(isSel){
-        ctx.strokeStyle = '#1859FF';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6,4]);
-        roundedRect(ctx, sx-r-4, sy-r-4, (r+4)*2, (r+4)*2, 8);
-        ctx.stroke();
-        ctx.setLineDash([]);
+      // selection
+      if(state.selectedId===it.id){
+        ctx.strokeStyle='#1859FF'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
+        roundedRect(ctx, sx-3, sy-3, w+6, h+6, 10); ctx.stroke(); ctx.setLineDash([]);
       }
     }
+  }
+
+  function drawMapRect(){
+    const [sx,sy]=W2S(0,0); const [ex,ey]=W2S(state.mapSize,state.mapSize);
+    ctx.fillStyle='#ffffff'; ctx.strokeStyle='#dbe6f3'; ctx.lineWidth=2;
+    roundedRect(ctx, sx, sy, ex-sx, ey-sy, 14); ctx.fill(); ctx.stroke();
   }
 
   function drawWatermark(){
-    const txt = '© bros24 / State214';
-    ctx.save();
-    ctx.globalAlpha = .9;
-    ctx.fillStyle = '#5e6a7b';
-    ctx.font = '600 12px Inter, system-ui, sans-serif';
-    ctx.textBaseline = 'bottom';
-    ctx.textAlign = 'right';
-    ctx.fillText(txt, stage.width-10, stage.height-8);
-    ctx.restore();
-  }
-
-  function fitCanvas(){
-    const dpr = window.devicePixelRatio || 1;
-    const rect = wrap.getBoundingClientRect();
-    const w = Math.max(320, rect.width);
-    const h = Math.max(320, rect.height);
-    stage.width = Math.round(w * dpr);
-    stage.height = Math.round(h * dpr);
-    stage.style.width = w+'px';
-    stage.style.height = h+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const txt='© bros24 / State214';
+    ctx.save(); ctx.globalAlpha=.95; ctx.fillStyle='#5e6a7b'; ctx.font='600 12px Inter, system-ui, sans-serif';
+    ctx.textBaseline='bottom'; ctx.textAlign='right'; ctx.fillText(txt, stage.width-10, stage.height-8); ctx.restore();
   }
 
   function render(){
-    fitCanvas();
-    ctx.clearRect(0,0,stage.width,stage.height);
-
-    // map rect
-    const [sx,sy] = worldToScreen(0,0);
-    const [ex,ey] = worldToScreen(state.mapSize,state.mapSize);
-    ctx.fillStyle = '#ffffff';
-    ctx.strokeStyle = '#dbe6f3';
-    ctx.lineWidth = 2;
-    roundedRect(ctx, sx, sy, ex-sx, ey-sy, 14);
-    ctx.fill();
-    ctx.stroke();
-
-    drawGrid();
-    drawItems();
-    drawWatermark();
+    fitCanvas(); ctx.clearRect(0,0,stage.width,stage.height);
+    drawMapRect(); drawGrid(); drawItems(); drawWatermark();
+    updateCounts(); // keep counters fresh
   }
 
-  // ---------- Hit test ----------
-  function itemAt(wx, wy){
-    const r = state.iconSize/2;
-    for(let i=state.items.length-1;i>=0;--i){
-      const it = state.items[i];
-      if(Math.abs(wx-it.x)<=r && Math.abs(wy-it.y)<=r) return it;
+  // ====== Counters / Limits ======
+  function countByType(){ const m={}; for(const it of state.items){ m[it.type]=(m[it.type]||0)+1; } return m; }
+  function updateCounts(){
+    const counts=countByType(); ui.countsRow.innerHTML='';
+    for(const t of CATALOG){
+      const used = counts[t.key]||0; const cap = t.limit;
+      const span=document.createElement('span'); span.className='miniStat';
+      span.textContent = t.label+': '+used+'/'+(cap>=900?'∞':cap);
+      ui.countsRow.appendChild(span);
     }
-    return null;
   }
 
-  // ---------- Mouse & keys ----------
+  // ====== Placement rules ======
+  function rectOf(it){
+    const t=TYPES[it.type];
+    return { x: it.x, y: it.y, w: t.w*state.gridSize, h: t.h*state.gridSize };
+  }
+  function intersects(a,b){ return !(a.x+a.w<=b.x || b.x+b.w<=a.x || a.y+a.h<=b.y || b.y+b.h<=a.y); }
+  function hasCollision(testId){
+    const A = rectOf(state.items.find(i=>i.id===testId));
+    for(const it of state.items){
+      if(it.id===testId) continue;
+      if(intersects(A, rectOf(it))) return true;
+    }
+    return false;
+  }
+  function canPlace(type){
+    const t=TYPES[type]; const cnt=countByType()[type]||0;
+    return cnt < t.limit;
+  }
+
+  // ====== Items ======
+  function addItem(type,x,y,name=''){
+    if(!canPlace(type)){ alert('Limit reached for '+TYPES[type].label); return null; }
+    const it={ id: state.nextId++, type, x, y, name };
+    state.items.push(it); return it;
+  }
+  function removeById(id){ state.items = state.items.filter(i=>i.id!==id); if(state.selectedId===id) state.selectedId=null; render(); updateSelected(); }
+
+  // ====== Selected panel ======
+  function updateSelected(){
+    const it=state.items.find(i=>i.id===state.selectedId)||null;
+    ui.selType.value= it? it.type : 'town';
+    ui.selName.value= it? (it.name||'') : '';
+    ui.selX.value= it? Math.round(it.x) : '';
+    ui.selY.value= it? Math.round(it.y) : '';
+    ui.selSize.textContent = it? ('Size: '+TYPES[it.type].w+'×'+TYPES[it.type].h+' tiles') : '—';
+  }
+  ui.btnApply.onclick=()=>{
+    const it=state.items.find(i=>i.id===state.selectedId); if(!it) return;
+    it.type=ui.selType.value; it.name=ui.selName.value.trim();
+    it.x=snap(parseFloat(ui.selX.value||it.x)); it.y=snap(parseFloat(ui.selY.value||it.y));
+    // prevent illegal after type change
+    if(state.blockOverlap && hasCollision(it.id)){ alert('Overlap not allowed for '+TYPES[it.type].label); }
+    render(); updateSelected();
+  };
+  ui.btnDup.onclick=()=>{
+    const it=state.items.find(i=>i.id===state.selectedId); if(!it) return;
+    const t=TYPES[it.type]; const dx=t.w*state.gridSize;
+    const c=addItem(it.type, snap(it.x+dx), snap(it.y), it.name);
+    if(c){ state.selectedId=c.id; updateSelected(); render(); }
+  };
+  ui.btnDelete.onclick=()=>{ if(state.selectedId!=null) removeById(state.selectedId); };
+
+  // ====== Toolbar ======
+  function setMode(m){ state.mode=m; highlight(); }
+  ui.modeSelect.onclick=()=>setMode('select');
+  ui.modeBuild.onclick=()=>setMode('build');
+  ui.modeErase.onclick=()=>setMode('erase');
+  ui.modePan.onclick=()=>setMode('pan');
+  ui.btnGrid.onclick=()=>{state.grid=!state.grid; highlight(); render();};
+  ui.btnSnap.onclick=()=>{state.snap=!state.snap; highlight();};
+  ui.btnReset.onclick=resetView;
+  ui.gridSize.oninput=()=>{ state.gridSize=Math.max(5, parseInt(ui.gridSize.value||30)); render(); };
+  ui.mapSize.oninput=()=>{ state.mapSize=parseInt(ui.mapSize.value||1500); render(); };
+  ui.labelSize.oninput=()=>{ state.labelSize=parseInt(ui.labelSize.value||14); render(); };
+  ui.iconSize.oninput=()=>{ state.iconSize=parseInt(ui.iconSize.value||28); render(); };
+  ui.noOverlap.onchange=()=>{ state.blockOverlap = ui.noOverlap.checked; };
+
+  ui.btnClear.onclick=()=>{ if(confirm('Clear all items?')){ state.items=[]; state.selectedId=null; state.nextId=1; render(); updateSelected(); } };
+  ui.btnSave.onclick=()=>doSave();
+  ui.btnLoad.onclick=()=>ui.fileInput.click();
+  ui.fileInput.addEventListener('change', async (e)=>{
+    if(!e.target.files?.[0]) return;
+    const text = await e.target.files[0].text();
+    try{ loadFromJSON(JSON.parse(text)); }catch{ alert('Invalid JSON file.'); }
+  });
+  ui.btnPNG.onclick=()=>exportPNG();
+  ui.btnPDF.onclick=()=>exportPDF();
+
+  // ====== Mouse & keys ======
   let isDragging=false, dragItem=null, lastWorld=[0,0];
   wrap.addEventListener('mousemove', (e)=>{
-    const rect = stage.getBoundingClientRect();
-    const [wx,wy] = screenToWorld(e.clientX-rect.left, e.clientY-rect.top);
-    coords.textContent = 'x: '+Math.round(wx)+' , y: '+Math.round(wy);
-    lastWorld=[wx,wy];
-
+    const r=stage.getBoundingClientRect(); const [wx,wy]=S2W(e.clientX-r.left, e.clientY-r.top);
+    coords.textContent='x: '+Math.round(wx)+' , y: '+Math.round(wy); lastWorld=[wx,wy];
     if(isDragging){
       if(state.mode==='pan' || state.spacePanning){
-        const [sx,sy] = [e.movementX/state.camera.scale, e.movementY/state.camera.scale];
-        state.camera.x -= sx;
-        state.camera.y -= sy;
+        const [sx,sy]=[e.movementX/state.camera.scale, e.movementY/state.camera.scale];
+        state.camera.x -= sx; state.camera.y -= sy;
       }else if(dragItem){
-        dragItem.x = snap(wx);
-        dragItem.y = snap(wy);
-        updateSelectedPanel();
+        dragItem.x=snap(wx); dragItem.y=snap(wy);
+        if(state.blockOverlap && hasCollision(dragItem.id)){ /* allow preview; blocking on mouseup */ }
+        updateSelected();
       }
       render();
     }
   }, {passive:true});
 
+  function itemAt(wx,wy){
+    for(let i=state.items.length-1;i>=0;--i){
+      const it=state.items[i]; const R=rectOf(it);
+      if(wx>=R.x && wx<=R.x+R.w && wy>=R.y && wy<=R.y+R.h) return it;
+    } return null;
+  }
+
   wrap.addEventListener('mousedown', (e)=>{
-    e.preventDefault();
-    const rect = stage.getBoundingClientRect();
-    const [wx,wy] = screenToWorld(e.clientX-rect.left, e.clientY-rect.top);
+    e.preventDefault(); const r=stage.getBoundingClientRect();
+    const [wx,wy]=S2W(e.clientX-r.left, e.clientY-r.top);
     if(state.mode==='select'){
-      const hit = itemAt(wx,wy);
-      state.selectedId = hit? hit.id : null;
-      dragItem = hit;
-      isDragging = true;
+      const hit=itemAt(wx,wy); state.selectedId = hit? hit.id : null; dragItem=hit; isDragging=!!hit;
     }else if(state.mode==='erase'){
-      const hit = itemAt(wx,wy);
-      if(hit) removeById(hit.id);
+      const hit=itemAt(wx,wy); if(hit) removeById(hit.id);
     }else if(state.mode==='build'){
-      const item = addItem(currentBuildType, snap(wx), snap(wy));
-      state.selectedId = item.id;
-      dragItem = item;
-      isDragging = true;
-    }else if(state.mode==='pan' || state.spacePanning){
-      isDragging = true;
-    }
-    updateSelectedPanel();
-    render();
+      if(!canPlace(currentType)){ alert('Limit reached for '+TYPES[currentType].label); return; }
+      const t=TYPES[currentType]; const item=addItem(currentType, snap(wx), snap(wy));
+      if(item){ state.selectedId=item.id; dragItem=item; isDragging=true; }
+    }else if(state.mode==='pan' || state.spacePanning){ isDragging=true; }
+    updateSelected(); render();
   });
-  window.addEventListener('mouseup', ()=>{ isDragging=false; dragItem=null; });
+  window.addEventListener('mouseup', ()=>{
+    if(dragItem && state.blockOverlap && hasCollision(dragItem.id)){
+      // revert move to nearest non-colliding (simple: nudge back)
+      const it=dragItem; const R=rectOf(it);
+      it.x = snap(it.x + state.gridSize); if(hasCollision(it.id)) it.x = snap(it.x - 2*state.gridSize);
+      if(hasCollision(it.id)) it.y = snap(it.y + state.gridSize);
+      if(hasCollision(it.id)) it.y = snap(it.y - 2*state.gridSize);
+      if(hasCollision(it.id)) alert('Cannot place here: overlap.');
+    }
+    isDragging=false; dragItem=null; render(); updateSelected();
+  });
 
   window.addEventListener('wheel', (e)=>{
-    const delta = Math.sign(e.deltaY);
-    const factor = 1 + (Math.abs(e.deltaY)/600);
-    const old = state.camera.scale;
-    let next = delta>0 ? old/factor : old*factor;
-    next = Math.min(4, Math.max(0.2, next));
-    // zoom around cursor
-    const [cx,cy] = lastWorld;
-    const {x,y,scale} = state.camera;
-    state.camera.x = cx - ( (cx - x) * (next/scale) );
-    state.camera.y = cy - ( (cy - y) * (next/scale) );
-    state.camera.scale = next;
-    render();
+    const delta=Math.sign(e.deltaY); const factor=1 + (Math.abs(e.deltaY)/600);
+    const old=state.camera.scale; let next= delta>0 ? old/factor : old*factor;
+    next=Math.min(4, Math.max(0.2,next));
+    const [cx,cy]=lastWorld; const {x,y,scale}=state.camera;
+    state.camera.x = cx - ((cx-x)*(next/scale)); state.camera.y = cy - ((cy-y)*(next/scale)); state.camera.scale=next; render();
   }, {passive:true});
 
   window.addEventListener('keydown', (e)=>{
     if(e.code==='Space'){ state.spacePanning=true; }
     if(e.key==='v' || e.key==='V'){ setMode('select'); }
     if(e.key==='b' || e.key==='B'){ setMode('build'); }
-    if(e.key==='g' || e.key==='G'){ state.grid=!state.grid; highlightPalette(); render(); }
-    if(e.key==='s' || e.key==='S'){
-      if(e.ctrlKey){ e.preventDefault(); doSave(); }
-      else { state.snap=!state.snap; highlightPalette(); }
-    }
+    if(e.key==='g' || e.key==='G'){ state.grid=!state.grid; highlight(); render(); }
+    if(e.key==='s' || e.key==='S'){ if(e.ctrlKey){ e.preventDefault(); doSave(); } else { state.snap=!state.snap; highlight(); } }
     if(e.key==='0'){ resetView(); }
     if(e.key==='Delete'){ if(state.selectedId!=null) removeById(state.selectedId); }
-    if(e.key==='o' || e.key==='O'){ if(e.ctrlKey){ e.preventDefault(); btns.fileInput.click(); } }
+    if(e.key==='o' || e.key==='O'){ if(e.ctrlKey){ e.preventDefault(); ui.fileInput.click(); } }
   });
-  window.addEventListener('keyup', (e)=>{
-    if(e.code==='Space'){ state.spacePanning=false; }
-  });
+  window.addEventListener('keyup', (e)=>{ if(e.code==='Space'){ state.spacePanning=false; } });
 
-  // ---------- Items API ----------
-  function addItem(type,x,y,name=''){
-    const it = { id: state.nextId++, type, x, y, name };
-    state.items.push(it);
-    return it;
-  }
-  function removeById(id){
-    state.items = state.items.filter(i=>i.id!==id);
-    if(state.selectedId===id) state.selectedId=null;
-    render(); updateSelectedPanel();
-  }
-
-  // ---------- Selected panel ----------
-  function updateSelectedPanel(){
-    const it = state.items.find(i=>i.id===state.selectedId) || null;
-    btns.selType.value = it? it.type : defaultType;
-    btns.selName.value = it? (it.name||'') : '';
-    btns.selX.value = it? Math.round(it.x) : '';
-    btns.selY.value = it? Math.round(it.y) : '';
-  }
-  btns.btnApply.onclick = ()=>{
-    const it = state.items.find(i=>i.id===state.selectedId); if(!it) return;
-    it.type = btns.selType.value;
-    it.name = btns.selName.value.trim();
-    it.x = snap(parseFloat(btns.selX.value||it.x));
-    it.y = snap(parseFloat(btns.selY.value||it.y));
-    render(); updateSelectedPanel();
-  };
-  btns.btnDup.onclick = ()=>{
-    const it = state.items.find(i=>i.id===state.selectedId); if(!it) return;
-    const c = addItem(it.type, snap(it.x+state.gridSize), snap(it.y), it.name);
-    state.selectedId = c.id; updateSelectedPanel(); render();
-  };
-  btns.btnDelete.onclick = ()=>{ if(state.selectedId!=null) removeById(state.selectedId); };
-
-  // ---------- Toolbar ----------
-  function setMode(m){ state.mode=m; highlightPalette(); }
-  btns.modeSelect.onclick = ()=>setMode('select');
-  btns.modeBuild.onclick = ()=>setMode('build');
-  btns.modeErase.onclick = ()=>setMode('erase');
-  btns.modePan.onclick = ()=>setMode('pan');
-  btns.btnGrid.onclick = ()=>{state.grid=!state.grid; highlightPalette(); render();};
-  btns.btnSnap.onclick = ()=>{state.snap=!state.snap; highlightPalette();};
-  btns.btnReset.onclick = resetView;
-  btns.gridSize.oninput = ()=>{ state.gridSize = Math.max(5, parseInt(btns.gridSize.value||30)); render(); };
-  btns.mapSize.oninput = ()=>{ state.mapSize = parseInt(btns.mapSize.value||1500); render(); };
-  btns.labelSize.oninput = ()=>{ state.labelSize = parseInt(btns.labelSize.value||14); render(); };
-  btns.iconSize.oninput = ()=>{ state.iconSize = parseInt(btns.iconSize.value||28); render(); };
-  btns.btnClear.onclick = ()=>{
-    if(confirm('Clear all items?')){ state.items=[]; state.selectedId=null; state.nextId=1; render(); updateSelectedPanel(); }
-  };
-
-  btns.btnSave.onclick = ()=>doSave();
-  btns.btnLoad.onclick = ()=>btns.fileInput.click();
-  btns.fileInput.addEventListener('change', async (e)=>{
-    if(!e.target.files?.[0]) return;
-    const text = await e.target.files[0].text();
-    try{
-      const j = JSON.parse(text);
-      loadFromJSON(j);
-    }catch(err){
-      alert('Invalid JSON file.');
-    }
-  });
-
-  btns.btnPNG.onclick = ()=> exportPNG();
-  btns.btnPDF.onclick = ()=> exportPDF();
-
-  // ---------- Save / Load ----------
+  // ====== Save / Load ======
   function serialize(){
     return {
-      meta: { app:'bros24-settlement-planner', version:1, gridSize:state.gridSize, mapSize:state.mapSize },
+      meta:{ app:'bros24-settlement-planner', version:2, gridSize:state.gridSize, mapSize:state.mapSize },
       items: state.items.map(i=>({id:i.id,type:i.type,x:Math.round(i.x),y:Math.round(i.y),name:i.name||''}))
     };
   }
   function doSave(){
-    const blob = new Blob([JSON.stringify(serialize(),null,2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'settlement-layout.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const blob=new Blob([JSON.stringify(serialize(),null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='settlement-layout.json'; a.click(); URL.revokeObjectURL(a.href);
   }
   function loadFromJSON(j){
-    const items = Array.isArray(j)? j : (j.items||[]);
-    state.items = items.map((o,idx)=>({ id: ++idx, type:o.type||defaultType, x:o.x||0, y:o.y||0, name:o.name||o.label||'' }));
+    const items=Array.isArray(j)? j : (j.items||[]);
+    state.items = items.map((o,idx)=>({ id: ++idx, type:o.type in TYPES? o.type:'town', x:o.x||0, y:o.y||0, name:o.name||o.label||'' }));
     state.nextId = state.items.length+1;
-    if(j.meta?.gridSize) { state.gridSize = j.meta.gridSize; btns.gridSize.value = state.gridSize; }
-    if(j.meta?.mapSize) { state.mapSize = j.meta.mapSize; btns.mapSize.value = String(state.mapSize); }
-    render(); updateSelectedPanel();
+    if(j.meta?.gridSize){ state.gridSize=j.meta.gridSize; ui.gridSize.value=state.gridSize; }
+    if(j.meta?.mapSize){ state.mapSize=j.meta.mapSize; ui.mapSize.value=String(state.mapSize); }
+    render(); updateSelected();
   }
 
-  // Optional: auto-load buildings.json if present (on GitHub Pages it works, on file:// it may be blocked)
-  fetch('buildings.json').then(r=> r.ok? r.json(): Promise.reject()).then(j=>{ loadFromJSON(j); }).catch(()=>{});
+  // Try auto-load buildings.json if served (works on GitHub Pages)
+  fetch('buildings.json').then(r=> r.ok? r.json(): Promise.reject()).then(loadFromJSON).catch(()=>{});
 
-  // ---------- Export helpers ----------
+  // ====== Export ======
   function exportCanvasBase(scale=2){
-    const size = state.mapSize+100; // padding
-    const W = size*scale, H = size*scale;
-    const c = document.createElement('canvas');
-    c.width=W; c.height=H;
-    const g = c.getContext('2d');
-
-    // bg
-    g.fillStyle = '#ffffff'; g.fillRect(0,0,W,H);
-
-    // map rect
-    const pad = 50*scale;
-    const mapW = state.mapSize*scale, mapH = state.mapSize*scale;
-    roundedRect(g, pad, pad, mapW, mapH, 14*scale);
-    g.fillStyle = '#ffffff'; g.fill();
-    g.lineWidth = 2*scale; g.strokeStyle='#dbe6f3'; g.stroke();
-
-    // grid
+    const size=state.mapSize+100, W=size*scale, H=size*scale;
+    const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+    g.fillStyle='#ffffff'; g.fillRect(0,0,W,H);
+    const pad=50*scale, mapW=state.mapSize*scale, mapH=state.mapSize*scale;
+    roundedRect(g,pad,pad,mapW,mapH,14*scale); g.fillStyle='#ffffff'; g.fill();
+    g.lineWidth=2*scale; g.strokeStyle='#dbe6f3'; g.stroke();
     if(state.grid && state.gridSize*scale>=8){
-      g.strokeStyle = '#ebf0f6'; g.lineWidth=1;
-      g.beginPath();
+      g.strokeStyle='#ebf0f6'; g.lineWidth=1; g.beginPath();
       for(let x=pad; x<=pad+mapW; x+=state.gridSize*scale){ g.moveTo(x,pad); g.lineTo(x,pad+mapH); }
       for(let y=pad; y<=pad+mapH; y+=state.gridSize*scale){ g.moveTo(pad,y); g.lineTo(pad+mapW,y); }
       g.stroke();
     }
-
     // items
-    const r = (state.iconSize/2)*scale;
-    g.textAlign='center'; g.textBaseline='middle';
-    for(const item of state.items){
-      const t = typeByKey[item.type] || typeByKey[defaultType];
-      const x = pad + item.x*scale;
-      const y = pad + item.y*scale;
-      g.save();
-      g.shadowColor = 'rgba(0,0,0,.07)'; g.shadowBlur = 8*scale;
-      g.fillStyle = t.color;
-      roundedRect(g, x-r, y-r, r*2, r*2, 6*scale); g.fill();
-      g.restore();
-      g.fillStyle = '#0d1b2a';
-      g.font = '800 '+Math.max(10*scale, (state.labelSize-2)*scale)+'px Inter, system-ui, sans-serif';
-      g.fillText(t.short, x, y);
-      if(item.name){
-        g.fillStyle = 'rgba(13,27,42,.85)';
-        g.font = '600 '+(state.labelSize*scale-2)+'px Inter, system-ui, sans-serif';
-        g.fillText(item.name, x, y + r + 10*scale);
-      }
+    for(const it of state.items){
+      const t=TYPES[it.type]; const x=pad + it.x*scale, y=pad + it.y*scale;
+      const w=t.w*state.gridSize*scale, h=t.h*state.gridSize*scale;
+      g.save(); g.shadowColor='rgba(0,0,0,.07)'; g.shadowBlur=8*scale; g.fillStyle=t.color;
+      roundedRect(g,x,y,w,h,8*scale); g.fill(); g.restore();
+      g.fillStyle='#0d1b2a'; g.textAlign='center'; g.textBaseline='middle';
+      g.font='800 '+Math.max(10*scale, (state.labelSize-2)*scale)+'px Inter, system-ui, sans-serif'; g.fillText(t.short, x+w/2, y+h/2);
+      if(it.name){ g.fillStyle='rgba(13,27,42,.85)'; g.font='600 '+(state.labelSize*scale)+'px Inter, system-ui, sans-serif'; g.fillText(it.name, x+w/2, y+h + 14*scale); }
     }
-
     // watermark
-    g.fillStyle = '#5e6a7b';
-    g.font = '600 '+(12*scale)+'px Inter, system-ui, sans-serif';
-    g.textBaseline='bottom'; g.textAlign='right';
+    g.fillStyle='#5e6a7b'; g.font='600 '+(12*scale)+'px Inter, system-ui, sans-serif'; g.textAlign='right'; g.textBaseline='bottom';
     g.fillText('© bros24 / State214', W-10*scale, H-10*scale);
-
     return c;
   }
-
   function exportPNG(){
-    const c = exportCanvasBase(3);
-    c.toBlob((blob)=>{
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'settlement-layout.png';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }, 'image/png', 1.0);
+    const c=exportCanvasBase(3);
+    c.toBlob((blob)=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='settlement-layout.png'; a.click(); URL.revokeObjectURL(a.href); }, 'image/png', 1.0);
   }
-
   function exportPDF(){
-    const c = exportCanvasBase(2);
-    const dataUrl = c.toDataURL('image/png');
-    const J = (window.jspdf || window.jspdf_umd || {}).jsPDF;
-    if(!J){ alert('jsPDF failed to load. Check connection / CDN.'); return; }
-    const pdf = new J({orientation:'portrait', unit:'pt', format:'a4'});
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-    const margin = 24;
-    const img = new Image();
-    img.onload = ()=>{
-      const ratio = Math.min((pageW-2*margin)/img.width, (pageH-2*margin)/img.height);
-      const w = img.width*ratio, h = img.height*ratio;
-      const x = (pageW-w)/2, y = (pageH-h)/2;
-      pdf.addImage(dataUrl,'PNG',x,y,w,h);
-      pdf.save('settlement-layout.pdf');
-    };
-    img.src = dataUrl;
+    const c=exportCanvasBase(2); const dataUrl=c.toDataURL('image/png');
+    const J=(window.jspdf||window.jspdf_umd||{}).jsPDF; if(!J){ alert('jsPDF failed to load.'); return; }
+    const pdf=new J({orientation:'portrait', unit:'pt', format:'a4'});
+    const pageW=pdf.internal.pageSize.getWidth(), pageH=pdf.internal.pageSize.getHeight(), margin=24;
+    const img=new Image(); img.onload=()=>{ const ratio=Math.min((pageW-2*margin)/img.width,(pageH-2*margin)/img.height);
+      const w=img.width*ratio, h=img.height*ratio, x=(pageW-w)/2, y=(pageH-h)/2;
+      pdf.addImage(dataUrl,'PNG',x,y,w,h); pdf.save('settlement-layout.pdf'); };
+    img.src=dataUrl;
   }
 
-  // ---------- View ----------
+  // ====== Boot ======
   function resetView(){
-    // compute scale to fit full map initially
-    const rect = wrap.getBoundingClientRect();
-    const pad = 50;
-    const target = Math.min((rect.width-2*pad)/(state.mapSize+0.0001),
-                            (rect.height-2*pad)/(state.mapSize+0.0001));
-    state.camera = { x: -pad, y: -pad, scale: Math.max(0.2, target) };
-    render();
+    const rect=wrap.getBoundingClientRect(), pad=50;
+    const target=Math.min((rect.width-2*pad)/(state.mapSize+0.001),(rect.height-2*pad)/(state.mapSize+0.001));
+    state.camera={x:-pad,y:-pad,scale:Math.max(0.2,target)}; render();
   }
 
-  // ---------- Boot ----------
-  window.addEventListener('resize', render);
-  // First render to have dimensions, then reset to fit
-  render();
-  resetView();
+  // Build UI select lists & counts once
+  function initSelectList(){
+    ui.selType.innerHTML = CATALOG.map(t=>'<option value="'+t.key+'">'+t.label+' ('+t.w+'×'+t.h+')</option>').join('');
+  }
+  initSelectList();
+  render(); resetView();
+
+  // Sync palette highlight
+  function syncSelSize(){
+    const it=state.items.find(i=>i.id===state.selectedId); if(!it){ ui.selSize.textContent='—'; return; }
+    const t=TYPES[it.type]; ui.selSize.textContent='Size: '+t.w+'×'+t.h+' tiles';
+  }
+
   </script>
 </body>
 </html>
