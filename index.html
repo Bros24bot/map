@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bros24 — Settlement Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0e1116;
+      --panel:#151a22;
+      --muted:#8b9bb4;
+      --text:#e8eefc;
+      --accent:#6aa9ff;
+      --accent-2:#97f3ff;
+      --danger:#ff7a7a;
+      --ok:#5ee096;
+      --grid:#1c2330;
+      --grid-2:#1a2130;
+      --chip:#202838;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Ubuntu;
+      color:var(--text);
+      background:linear-gradient(180deg,#0a0d12,#0c1118 40%,#0e131a);
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+    header{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 16px;
+      background:linear-gradient(90deg,#101622,#0f1521 60%,#0f1824);
+      border-bottom:1px solid #1a2230;
+      position:sticky;top:0;z-index:10;
+    }
+    .brand{
+      font-weight:800;letter-spacing:0.2px;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      font-size:18px;
+    }
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .spacer{flex:1}
+    .btn{
+      appearance:none;border:1px solid #223049;background:#131a26;color:var(--text);
+      padding:8px 12px;border-radius:10px;cursor:pointer;
+      transition:.15s transform,.15s background,.15s border-color;
+      font-weight:600;
+    }
+    .btn:hover{transform:translateY(-1px);background:#151f2e}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{background:linear-gradient(180deg,#14305a,#10233f);border-color:#294068}
+    .btn.warn{border-color:#4a1e26;background:#1b1012}
+    .btn.ok{border-color:#1f3c2b;background:#0f1713}
+    .btn.ghost{background:transparent;border-color:#253142}
+    .btn.small{padding:6px 10px;font-size:13px}
+    .seg{display:flex;border:1px solid #263247;border-radius:12px;overflow:hidden}
+    .seg .btn{border:0;border-right:1px solid #263247;border-radius:0}
+    .seg .btn:last-child{border-right:0}
+    #app{
+      display:grid;grid-template-columns: 320px 1fr;
+      min-height:0;
+    }
+    aside{
+      border-right:1px solid #1a2230;background:linear-gradient(180deg,#101622,#0f1520);
+      padding:14px;display:flex;flex-direction:column;gap:14px;min-height:0;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid #1c2533;border-radius:14px;padding:12px;
+      box-shadow:0 0 0 1px rgba(255,255,255,.02) inset, 0 10px 30px rgba(3,6,10,.25);
+    }
+    .panel h3{margin:0 0 8px 0;font-size:14px;color:#b9c5dc;letter-spacing:.2px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .row input[type="number"]{width:84px}
+    label{font-size:12px;color:#9db0cf}
+    input,select{
+      background:#0f1622;border:1px solid #2a3950;color:var(--text);
+      border-radius:10px;padding:8px;
+    }
+    #palette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .chip{
+      display:flex;gap:8px;align-items:center;justify-content:flex-start;
+      background:linear-gradient(180deg,#0f1622,#0d1420);
+      border:1px solid #252f43;border-radius:12px;padding:10px;cursor:pointer;
+      user-select:none;
+    }
+    .chip .dot{
+      width:22px;height:22px;border-radius:6px;background:#3a4d73;
+      display:grid;place-items:center;font-weight:800;color:#0b0f17;border:1px solid #51668f
+    }
+    .chip.active{outline:2px solid var(--accent);outline-offset:0}
+    .chip span{font-size:13px}
+    .gridRow{display:flex;gap:8px;align-items:center;justify-content:space-between}
+    .muted{color:var(--muted);font-size:12px}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#0c111a;border:1px solid #273247;border-radius:6px;padding:2px 6px}
+    canvas{display:block;width:100%;height:100%}
+    #stageWrap{position:relative;background:radial-gradient(1200px 1200px at 60% 10%, #0e1320 0%, #0b1018 60%, #0a0e15 100%);}
+    #coords{position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:10px;background:#0c121b;border:1px solid #263247;color:#a8b6ce;font-size:12px}
+    footer{
+      border-top:1px solid #1a2230;
+      padding:10px 14px;font-size:12px;color:#94a7c6;display:flex;gap:12px;align-items:center;justify-content:space-between
+    }
+    .notice{color:#8cb1ff}
+    .legend{display:flex;gap:10px;flex-wrap:wrap}
+    .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:6px;vertical-align:middle}
+    .copyright{opacity:.9}
+    .hr{height:1px;background:#1b2433;border:0;margin:8px 0}
+    .danger{color:#ff9fa1}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Bros24 • Settlement Planner</div>
+    <div class="toolbar">
+      <div class="seg" role="tablist" aria-label="Mode">
+        <button id="modeSelect" class="btn small" aria-pressed="true" title="Select/Move (V)">Select</button>
+        <button id="modeBuild" class="btn small" title="Build (B)">Build</button>
+        <button id="modeErase" class="btn small" title="Erase (Del)">Erase</button>
+        <button id="modePan" class="btn small" title="Pan (Space)">Pan</button>
+      </div>
+      <button id="btnGrid" class="btn small ghost" title="Toggle grid (G)">Grid</button>
+      <button id="btnSnap" class="btn small ghost" title="Snap to grid (S)">Snap</button>
+      <button id="btnReset" class="btn small ghost" title="Reset view (0)">Reset</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="toolbar">
+      <input id="fileInput" type="file" accept=".json" style="display:none" />
+      <button id="btnLoad" class="btn small">Load JSON</button>
+      <button id="btnSave" class="btn small ok">Save JSON</button>
+      <button id="btnPNG" class="btn small primary">Export PNG</button>
+      <button id="btnPDF" class="btn small primary">Export PDF</button>
+      <button id="btnClear" class="btn small warn">Clear</button>
+    </div>
+  </header>
+
+  <div id="app">
+    <aside>
+      <div class="panel">
+        <h3>Palette</h3>
+        <div id="palette"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Options</h3>
+        <div class="row">
+          <label>Grid size</label>
+          <input id="gridSize" type="number" min="5" max="200" step="1" value="30" />
+          <label>Map</label>
+          <select id="mapSize">
+            <option value="1200">1200 × 1200</option>
+            <option value="1500" selected>1500 × 1500</option>
+            <option value="1800">1800 × 1800</option>
+            <option value="2100">2100 × 2100</option>
+          </select>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <label>Label size</label>
+          <input id="labelSize" type="number" min="8" max="48" step="1" value="14" />
+          <label>Icon size</label>
+          <input id="iconSize" type="number" min="10" max="60" step="1" value="28" />
+        </div>
+        <div class="hr"></div>
+        <div class="gridRow">
+          <span class="muted">Mousewheel to zoom • drag to pan</span>
+          <span class="muted"><span class="kbd">B</span> build • <span class="kbd">V</span> select</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Selected</h3>
+        <div class="row">
+          <label>Type</label>
+          <select id="selType"></select>
+        </div>
+        <div class="row">
+          <label>Name</label>
+          <input id="selName" type="text" placeholder="Custom name"/>
+        </div>
+        <div class="row">
+          <label>X</label><input id="selX" type="number" />
+          <label>Y</label><input id="selY" type="number" />
+          <button id="btnApply" class="btn small">Apply</button>
+        </div>
+        <div class="row">
+          <button id="btnDup" class="btn small">Duplicate</button>
+          <button id="btnDelete" class="btn small warn">Delete</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Legend</h3>
+        <div id="legend" class="legend"></div>
+      </div>
+
+      <div class="panel">
+        <h3>About</h3>
+        <div class="muted">
+          Client‑only. Your layouts stay on your device unless you press
+          “Save JSON”. No server storage. Not affiliated with Century Games.
+        </div>
+      </div>
+    </aside>
+
+    <div id="stageWrap">
+      <canvas id="stage" width="1600" height="1200" aria-label="Planner canvas"></canvas>
+      <div id="coords">x: 0, y: 0</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="notice">Tip: Press <span class="kbd">Ctrl</span> + <span class="kbd">S</span> to save JSON, <span class="kbd">Ctrl</span> + <span class="kbd">O</span> to load.</div>
+    <div class="copyright">© bros24 / State214</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+  // ---------- Data: building types (customize freely) ----------
+  const TYPES = [
+    { key:'city',    label:'City',        short:'C',  color:'#9fd3ff' },
+    { key:'bear',    label:'Bear Trap',   short:'B',  color:'#ffb1a8' },
+    { key:'meat',    label:'Meat Farm',   short:'M',  color:'#f7e08a' },
+    { key:'wood',    label:'Wood Farm',   short:'W',  color:'#c6e3a5' },
+    { key:'coal',    label:'Coal Farm',   short:'Co', color:'#b0b8c6' },
+    { key:'iron',    label:'Iron Farm',   short:'Fe', color:'#b7d0ff' },
+    { key:'facility',label:'Facility',    short:'F',  color:'#cbb8ff' },
+    { key:'turret',  label:'Turret',      short:'T',  color:'#ffd59b' },
+    { key:'castle',  label:'Castle',      short:'$',  color:'#fff1a6' },
+  ];
+
+  const typeByKey = Object.fromEntries(TYPES.map(t=>[t.key,t]));
+  const defaultType = 'city';
+
+  // ---------- State ----------
+  const state = {
+    items: [], // {id,type,x,y,name}
+    nextId: 1,
+    mode: 'select', // 'select'|'build'|'erase'|'pan'
+    camera: {x: 0, y:0, scale:1},
+    grid: true,
+    snap: true,
+    gridSize: 30,
+    mapSize: 1500,
+    selectedId: null,
+    labelSize: 14,
+    iconSize: 28,
+    spacePanning:false,
+  };
+
+  // ---------- DOM ----------
+  const $ = s=>document.querySelector(s);
+  const palette = $('#palette');
+  const stage = $('#stage');
+  const ctx = stage.getContext('2d');
+  const wrap = $('#stageWrap');
+  const coords = $('#coords');
+
+  // Controls
+  const btns = {
+    modeSelect: $('#modeSelect'),
+    modeBuild: $('#modeBuild'),
+    modeErase: $('#modeErase'),
+    modePan: $('#modePan'),
+    btnGrid: $('#btnGrid'),
+    btnSnap: $('#btnSnap'),
+    btnReset: $('#btnReset'),
+    btnLoad: $('#btnLoad'),
+    btnSave: $('#btnSave'),
+    btnPNG: $('#btnPNG'),
+    btnPDF: $('#btnPDF'),
+    btnClear: $('#btnClear'),
+    fileInput: $('#fileInput'),
+    gridSize: $('#gridSize'),
+    mapSize: $('#mapSize'),
+    labelSize: $('#labelSize'),
+    iconSize: $('#iconSize'),
+    selType: $('#selType'),
+    selName: $('#selName'),
+    selX: $('#selX'),
+    selY: $('#selY'),
+    btnApply: $('#btnApply'),
+    btnDup: $('#btnDup'),
+    btnDelete: $('#btnDelete'),
+    legend: $('#legend'),
+  };
+
+  // ---------- UI init ----------
+  function buildPalette(){
+    palette.innerHTML = '';
+    TYPES.forEach(t=>{
+      const el = document.createElement('button');
+      el.className = 'chip';
+      el.dataset.type = t.key;
+      el.innerHTML = '<div class="dot" style="background:'+t.color+'">'+t.short+'</div><span>'+t.label+'</span>';
+      el.onclick = ()=>{ setMode('build'); currentBuildType = t.key; highlightPalette(); };
+      palette.appendChild(el);
+    });
+  }
+  function buildLegend(){
+    btns.legend.innerHTML = '';
+    TYPES.forEach(t=>{
+      const span = document.createElement('span');
+      span.innerHTML = '<i style="background:'+t.color+'"></i>'+t.label;
+      btns.legend.appendChild(span);
+    });
+  }
+  function buildSelectedType(){
+    btns.selType.innerHTML = TYPES.map(t=>'<option value="'+t.key+'">'+t.label+'</option>').join('');
+  }
+  buildPalette(); buildLegend(); buildSelectedType();
+
+  let currentBuildType = defaultType;
+  function highlightPalette(){
+    const chips = palette.querySelectorAll('.chip');
+    chips.forEach(el=>{
+      el.classList.toggle('active', el.dataset.type===currentBuildType);
+    });
+    // Highlight toolbar modes
+    btns.modeSelect.classList.toggle('primary', state.mode==='select');
+    btns.modeBuild.classList.toggle('primary', state.mode==='build');
+    btns.modeErase.classList.toggle('primary', state.mode==='erase');
+    btns.modePan.classList.toggle('primary', state.mode==='pan');
+    btns.btnGrid.classList.toggle('primary', state.grid);
+    btns.btnSnap.classList.toggle('primary', state.snap);
+  }
+  highlightPalette();
+
+  // ---------- Helpers ----------
+  function worldToScreen(wx, wy){
+    const {x,y,scale} = state.camera;
+    return [ (wx - x)*scale, (wy - y)*scale ];
+  }
+  function screenToWorld(sx, sy){
+    const {x,y,scale} = state.camera;
+    return [ sx/scale + x, sy/scale + y ];
+  }
+  function snap(n){ return state.snap ? Math.round(n/state.gridSize)*state.gridSize : n; }
+
+  // ---------- Draw ----------
+  function drawGrid(){
+    if(!state.grid) return;
+    const {scale} = state.camera;
+    const step = state.gridSize*scale;
+    if(step<8) return;
+    const [w,h] = [stage.width, stage.height];
+    const ox = (-state.camera.x*scale)%step;
+    const oy = (-state.camera.y*scale)%step;
+    ctx.strokeStyle = '#1b2433';
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.8;
+    ctx.beginPath();
+    for(let x=ox;x<w;x+=step){ ctx.moveTo(x,0); ctx.lineTo(x,h); }
+    for(let y=oy;y<h;y+=step){ ctx.moveTo(0,y); ctx.lineTo(w,y); }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  function drawItems(){
+    const r = state.iconSize/2;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.font = '600 '+state.labelSize+'px Inter, system-ui, sans-serif';
+
+    for(const item of state.items){
+      const t = typeByKey[item.type] || typeByKey[defaultType];
+      const [sx,sy] = worldToScreen(item.x, item.y);
+      const isSel = item.id===state.selectedId;
+
+      // dot
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,.5)';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = t.color;
+      roundedRect(ctx, sx-r, sy-r, r*2, r*2, 6);
+      ctx.fill();
+      ctx.restore();
+
+      // short label
+      ctx.fillStyle = '#0a0e15';
+      ctx.font = '800 '+Math.max(10, state.labelSize-2)+'px Inter, system-ui, sans-serif';
+      ctx.fillText(t.short, sx, sy);
+
+      // name below
+      if(item.name){
+        ctx.font = '600 '+(state.labelSize-2)+'px Inter, system-ui, sans-serif';
+        ctx.fillStyle = 'rgba(220,230,255,.9)';
+        ctx.fillText(item.name, sx, sy + r + 10);
+      }
+
+      // selection ring
+      if(isSel){
+        ctx.strokeStyle = '#9fd3ff';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6,4]);
+        roundedRect(ctx, sx-r-4, sy-r-4, (r+4)*2, (r+4)*2, 8);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+
+  function roundedRect(c,x,y,w,h,r){
+    const rr=Math.min(r,w/2,h/2);
+    c.beginPath();
+    c.moveTo(x+rr,y);
+    c.arcTo(x+w,y,x+w,y+h,rr);
+    c.arcTo(x+w,y+h,x,y+h,rr);
+    c.arcTo(x,y+h,x,y,rr);
+    c.arcTo(x,y,x+w,y,rr);
+    c.closePath();
+  }
+
+  function drawWatermark(){
+    const txt = '© bros24 / State214';
+    ctx.save();
+    ctx.globalAlpha = .8;
+    ctx.fillStyle = '#87a0c6';
+    ctx.font = '600 12px Inter, system-ui, sans-serif';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(txt, stage.width-10, stage.height-8);
+    ctx.restore();
+  }
+
+  function render(){
+    // fit canvas to device pixels
+    const dpr = window.devicePixelRatio || 1;
+    const rect = wrap.getBoundingClientRect();
+    stage.width = Math.round(rect.width * dpr);
+    stage.height = Math.round(rect.height * dpr);
+    stage.style.width = rect.width+'px';
+    stage.style.height = rect.height+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    // clear
+    ctx.clearRect(0,0,stage.width,stage.height);
+
+    // map bounds box
+    const [sx,sy] = worldToScreen(0,0);
+    const [ex,ey] = worldToScreen(state.mapSize,state.mapSize);
+    ctx.fillStyle = '#0b111a';
+    ctx.strokeStyle = '#273247';
+    ctx.lineWidth = 2;
+    roundedRect(ctx, sx, sy, ex-sx, ey-sy, 14);
+    ctx.fill();
+    ctx.stroke();
+
+    drawGrid();
+    drawItems();
+    drawWatermark();
+  }
+
+  // ---------- Hit test ----------
+  function itemAt(wx, wy){
+    const r = state.iconSize/2;
+    // simple square hit
+    for(let i=state.items.length-1;i>=0;--i){
+      const it = state.items[i];
+      if(Math.abs(wx-it.x)<=r && Math.abs(wy-it.y)<=r) return it;
+    }
+    return null;
+  }
+
+  // ---------- Mouse & keys ----------
+  let isDragging=false, dragStart=null, dragItem=null, lastWorld=[0,0];
+  wrap.addEventListener('mousemove', (e)=>{
+    const rect = stage.getBoundingClientRect();
+    const [wx,wy] = screenToWorld(e.clientX-rect.left, e.clientY-rect.top);
+    coords.textContent = 'x: '+Math.round(wx)+' , y: '+Math.round(wy);
+    lastWorld=[wx,wy];
+
+    if(isDragging){
+      if(state.mode==='pan' || state.spacePanning){
+        const [sx,sy] = [e.movementX/state.camera.scale, e.movementY/state.camera.scale];
+        state.camera.x -= sx;
+        state.camera.y -= sy;
+      }else if(dragItem){
+        dragItem.x = snap(wx);
+        dragItem.y = snap(wy);
+        updateSelectedPanel();
+      }
+      render();
+    }
+  });
+
+  wrap.addEventListener('mousedown', (e)=>{
+    e.preventDefault();
+    wrap.focus?.();
+    const rect = stage.getBoundingClientRect();
+    const [wx,wy] = screenToWorld(e.clientX-rect.left, e.clientY-rect.top);
+    if(state.mode==='select'){
+      const hit = itemAt(wx,wy);
+      state.selectedId = hit? hit.id : null;
+      dragItem = hit;
+      isDragging = true;
+    }else if(state.mode==='erase'){
+      const hit = itemAt(wx,wy);
+      if(hit) removeById(hit.id);
+    }else if(state.mode==='build'){
+      const item = addItem(currentBuildType, snap(wx), snap(wy));
+      state.selectedId = item.id;
+      dragItem = item;
+      isDragging = true;
+    }else if(state.mode==='pan' || state.spacePanning){
+      isDragging = true;
+    }
+    updateSelectedPanel();
+    render();
+  });
+  window.addEventListener('mouseup', ()=>{ isDragging=false; dragItem=null; });
+
+  wrap.addEventListener('wheel', (e)=>{
+    const delta = Math.sign(e.deltaY);
+    const factor = 1 + (Math.abs(e.deltaY)/600);
+    const old = state.camera.scale;
+    let next = delta>0 ? old/factor : old*factor;
+    next = Math.min(4, Math.max(0.2, next));
+    // zoom around cursor
+    const [cx,cy] = lastWorld;
+    const {x,y,scale} = state.camera;
+    state.camera.x = cx - ( (cx - x) * (next/scale) );
+    state.camera.y = cy - ( (cy - y) * (next/scale) );
+    state.camera.scale = next;
+    render();
+  }, {passive:true});
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.code==='Space'){ state.spacePanning=true; wrap.style.cursor='grab'; }
+    if(e.key==='v' || e.key==='V'){ setMode('select'); }
+    if(e.key==='b' || e.key==='B'){ setMode('build'); }
+    if(e.key==='g' || e.key==='G'){ state.grid=!state.grid; highlightPalette(); render(); }
+    if(e.key==='s' || e.key==='S'){ if(e.ctrlKey){ e.preventDefault(); doSave(); } else { state.snap=!state.snap; highlightPalette(); } }
+    if(e.key==='0'){ resetView(); }
+    if(e.key==='Delete'){ if(state.selectedId!=null) removeById(state.selectedId); }
+    if(e.key==='o' || e.key==='O'){ if(e.ctrlKey){ e.preventDefault(); btns.fileInput.click(); } }
+  });
+  window.addEventListener('keyup', (e)=>{
+    if(e.code==='Space'){ state.spacePanning=false; wrap.style.cursor='default'; }
+  });
+
+  // ---------- Items API ----------
+  function addItem(type,x,y,name=''){
+    const it = { id: state.nextId++, type, x, y, name };
+    state.items.push(it);
+    return it;
+  }
+  function removeById(id){
+    state.items = state.items.filter(i=>i.id!==id);
+    if(state.selectedId===id) state.selectedId=null;
+    render();
+    updateSelectedPanel();
+  }
+
+  // ---------- Selected panel ----------
+  function updateSelectedPanel(){
+    const it = state.items.find(i=>i.id===state.selectedId) || null;
+    btns.selType.value = it? it.type : defaultType;
+    btns.selName.value = it? (it.name||'') : '';
+    btns.selX.value = it? Math.round(it.x) : '';
+    btns.selY.value = it? Math.round(it.y) : '';
+  }
+  btns.btnApply.onclick = ()=>{
+    const it = state.items.find(i=>i.id===state.selectedId); if(!it) return;
+    it.type = btns.selType.value;
+    it.name = btns.selName.value.trim();
+    it.x = snap(parseFloat(btns.selX.value||it.x));
+    it.y = snap(parseFloat(btns.selY.value||it.y));
+    render(); updateSelectedPanel();
+  };
+  btns.btnDup.onclick = ()=>{
+    const it = state.items.find(i=>i.id===state.selectedId); if(!it) return;
+    const c = addItem(it.type, snap(it.x+state.gridSize), snap(it.y), it.name);
+    state.selectedId = c.id; updateSelectedPanel(); render();
+  };
+  btns.btnDelete.onclick = ()=>{ if(state.selectedId!=null) removeById(state.selectedId); };
+
+  // ---------- Toolbar actions ----------
+  function setMode(m){ state.mode=m; highlightPalette(); }
+  btns.modeSelect.onclick = ()=>setMode('select');
+  btns.modeBuild.onclick = ()=>setMode('build');
+  btns.modeErase.onclick = ()=>setMode('erase');
+  btns.modePan.onclick = ()=>setMode('pan');
+  btns.btnGrid.onclick = ()=>{state.grid=!state.grid; highlightPalette(); render();};
+  btns.btnSnap.onclick = ()=>{state.snap=!state.snap; highlightPalette();};
+  btns.btnReset.onclick = resetView;
+  btns.gridSize.oninput = ()=>{ state.gridSize = Math.max(5, parseInt(btns.gridSize.value||30)); render(); };
+  btns.mapSize.oninput = ()=>{ state.mapSize = parseInt(btns.mapSize.value||1500); render(); };
+  btns.labelSize.oninput = ()=>{ state.labelSize = parseInt(btns.labelSize.value||14); render(); };
+  btns.iconSize.oninput = ()=>{ state.iconSize = parseInt(btns.iconSize.value||28); render(); };
+  btns.btnClear.onclick = ()=>{
+    if(confirm('Clear all items?')){ state.items=[]; state.selectedId=null; state.nextId=1; render(); updateSelectedPanel(); }
+  };
+
+  btns.btnSave.onclick = ()=>doSave();
+  btns.btnLoad.onclick = ()=>btns.fileInput.click();
+  btns.fileInput.addEventListener('change', async (e)=>{
+    if(!e.target.files?.[0]) return;
+    const text = await e.target.files[0].text();
+    try{
+      const j = JSON.parse(text);
+      loadFromJSON(j);
+    }catch(err){
+      alert('Invalid JSON file.');
+    }
+  });
+
+  btns.btnPNG.onclick = ()=> exportPNG();
+  btns.btnPDF.onclick = ()=> exportPDF();
+
+  function resetView(){
+    state.camera = {x: -50, y: -50, scale: stage.clientWidth/ (state.mapSize+100) };
+    render();
+  }
+
+  // ---------- Save / Load ----------
+  function serialize(){
+    return {
+      meta: { app:'bros24-settlement-planner', version:1, gridSize:state.gridSize, mapSize:state.mapSize },
+      items: state.items.map(i=>({id:i.id,type:i.type,x:Math.round(i.x),y:Math.round(i.y),name:i.name||''}))
+    };
+  }
+  function doSave(){
+    const blob = new Blob([JSON.stringify(serialize(),null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'settlement-layout.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  function loadFromJSON(j){
+    const items = Array.isArray(j)? j : (j.items||[]);
+    state.items = items.map((o,idx)=>({ id: ++idx, type:o.type||defaultType, x:o.x||0, y:o.y||0, name:o.name||o.label||'' }));
+    state.nextId = state.items.length+1;
+    if(j.meta?.gridSize) { state.gridSize = j.meta.gridSize; btns.gridSize.value = state.gridSize; }
+    if(j.meta?.mapSize) { state.mapSize = j.meta.mapSize; btns.mapSize.value = String(state.mapSize); }
+    render(); updateSelectedPanel();
+  }
+
+  // Attempt to load buildings.json if present (optional)
+  fetch('buildings.json').then(r=> r.ok? r.json(): Promise.reject()).then(j=>{ loadFromJSON(j); }).catch(()=>{});
+
+  // ---------- Export ----------
+  function exportCanvasBase(scale=2){
+    const size = state.mapSize+100; // padding
+    const W = size*scale, H = size*scale;
+    const c = document.createElement('canvas');
+    c.width=W; c.height=H;
+    const g = c.getContext('2d');
+    g.fillStyle = '#0b111a'; g.fillRect(0,0,W,H);
+
+    // draw map rect
+    const pad = 50*scale;
+    const mapW = state.mapSize*scale, mapH = state.mapSize*scale;
+    roundedRect(g, pad, pad, mapW, mapH, 14*scale);
+    g.fillStyle = '#0b111a'; g.fill();
+    g.lineWidth = 2*scale; g.strokeStyle='#273247'; g.stroke();
+
+    // grid
+    if(state.grid && state.gridSize*scale>=8){
+      g.strokeStyle = '#1b2433'; g.lineWidth=1;
+      g.beginPath();
+      for(let x=pad; x<=pad+mapW; x+=state.gridSize*scale){ g.moveTo(x,pad); g.lineTo(x,pad+mapH); }
+      for(let y=pad; y<=pad+mapH; y+=state.gridSize*scale){ g.moveTo(pad,y); g.lineTo(pad+mapW,y); }
+      g.stroke();
+    }
+
+    // items
+    const r = (state.iconSize/2)*scale;
+    g.textAlign='center'; g.textBaseline='middle';
+    for(const item of state.items){
+      const t = typeByKey[item.type] || typeByKey[defaultType];
+      const x = pad + item.x*scale;
+      const y = pad + item.y*scale;
+      g.save();
+      g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 8*scale;
+      g.fillStyle = t.color;
+      roundedRect(g, x-r, y-r, r*2, r*2, 6*scale); g.fill();
+      g.restore();
+      g.fillStyle = '#0a0e15';
+      g.font = '800 '+Math.max(10*scale, (state.labelSize-2)*scale)+'px Inter, system-ui, sans-serif';
+      g.fillText(t.short, x, y);
+      if(item.name){
+        g.fillStyle = 'rgba(220,230,255,.95)';
+        g.font = '600 '+(state.labelSize*scale-2)+'px Inter, system-ui, sans-serif';
+        g.fillText(item.name, x, y + r + 10*scale);
+      }
+    }
+
+    // watermark
+    g.fillStyle = '#87a0c6';
+    g.font = '600 '+(12*scale)+'px Inter, system-ui, sans-serif';
+    g.textBaseline='bottom'; g.textAlign='right';
+    g.fillText('© bros24 / State214', W-10*scale, H-10*scale);
+
+    return c;
+  }
+
+  function exportPNG(){
+    const c = exportCanvasBase(3);
+    c.toBlob((blob)=>{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'settlement-layout.png';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }, 'image/png', 1.0);
+  }
+
+  async function exportPDF(){
+    const c = exportCanvasBase(2);
+    const dataUrl = c.toDataURL('image/png');
+    const { jsPDF } = window.jspdf || window.jspdf_umd || {};
+    if(!jsPDF){ alert('jsPDF failed to load. Check internet connection.'); return; }
+    // A4 portrait
+    const pdf = new jsPDF({orientation:'portrait', unit:'pt', format:'a4'});
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 24;
+    // fit image
+    const img = new Image();
+    img.onload = ()=>{
+      const ratio = Math.min((pageW-2*margin)/img.width, (pageH-2*margin)/img.height);
+      const w = img.width*ratio;
+      const h = img.height*ratio;
+      const x = (pageW-w)/2;
+      const y = (pageH-h)/2;
+      pdf.addImage(dataUrl,'PNG',x,y,w,h);
+      pdf.save('settlement-layout.pdf');
+    };
+    img.src = dataUrl;
+  }
+
+  // ---------- Boot ----------
+  resetView();
+  render();
+  window.addEventListener('resize', render);
+  </script>
+</body>
+</html>

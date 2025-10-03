@@ -1,0 +1,8 @@
+[
+    { "type": "facility", "x": 5, "y": 5, "name": "Troop testing data" },
+    { "type": "facility", "x": 100, "y": 200, "name": "Troop Defense lvl 2" },
+    { "type": "facility", "x": 200, "y": 100, "name": "Troop Defense lvl 2" },
+    { "type": "facility", "x": 111, "y": 111, "name": "Troop Defense lvl 2" },
+    { "type": "facility", "x": 200, "y": 50, "name": "Troop Defense lvl 2" },
+    { "type": "facility", "x": 150, "y": 400, "name": "Troop Defense lvl 2" }
+]
